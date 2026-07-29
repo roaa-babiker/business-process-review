@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>سير العملية التجارية والتشغيلية — من الفرصة إلى إغلاق المشروع</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
+<style>
+  :root{
+    --sales:#2563eb; --bd:#0891b2; --ops:#ea580c; --finance:#16a34a; --mgmt:#7c3aed;
+    --bg:#f7f8fb; --ink:#1f2430; --muted:#5b6472; --card:#ffffff; --line:#e3e6ec;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Segoe UI","Tahoma","Noto Kufi Arabic","Arial",sans-serif;
+    line-height:1.9;
+  }
+  .wrap{max-width:1100px; margin:0 auto; padding:32px 24px 80px;}
+  header.cover{
+    background:linear-gradient(135deg,#1e293b,#334155);
+    color:#fff; padding:56px 40px; border-radius:18px; margin-bottom:36px;
+  }
+  header.cover h1{margin:0 0 10px; font-size:30px;}
+  header.cover p{margin:0; color:#cbd5e1; font-size:16px;}
+  .tags{display:flex; gap:10px; flex-wrap:wrap; margin-top:20px;}
+  .tag{background:rgba(255,255,255,.12); padding:6px 14px; border-radius:999px; font-size:13px;}
+
+  nav.toc{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:22px 26px; margin-bottom:36px;}
+  nav.toc h2{margin-top:0; font-size:17px;}
+  nav.toc ol{margin:0; padding-inline-start:22px; columns:2; gap:24px;}
+  nav.toc li{margin-bottom:6px; font-size:14.5px;}
+  nav.toc a{color:var(--ink); text-decoration:none;}
+  nav.toc a:hover{color:var(--sales); text-decoration:underline;}
+
+  section{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:28px 30px; margin-bottom:28px;}
+  section h2{
+    font-size:20px; margin:0 0 4px; display:flex; align-items:center; gap:10px;
+  }
+  section h2 .num{
+    background:var(--ink); color:#fff; width:30px; height:30px; border-radius:8px;
+    display:inline-flex; align-items:center; justify-content:center; font-size:14px; flex:none;
+  }
+  section .sub{color:var(--muted); font-size:14px; margin:0 0 18px;}
+  .mermaid{background:#fbfbfd; border:1px dashed var(--line); border-radius:10px; padding:18px; overflow:auto;}
+
+  .legend{display:flex; flex-wrap:wrap; gap:10px; margin:14px 0 6px;}
+  .legend span{
+    font-size:13px; padding:5px 12px; border-radius:999px; color:#fff; display:inline-flex; align-items:center; gap:6px;
+  }
+  .l-sales{background:var(--sales);} .l-bd{background:var(--bd);} .l-ops{background:var(--ops);}
+  .l-finance{background:var(--finance);} .l-mgmt{background:var(--mgmt);}
+
+  table{width:100%; border-collapse:collapse; margin-top:14px; font-size:14.5px;}
+  th,td{border:1px solid var(--line); padding:10px 12px; text-align:right; vertical-align:top;}
+  th{background:#f1f3f7;}
+  tr:nth-child(even) td{background:#fafbfc;}
+
+  .decision-box{
+    border-right:4px solid var(--ops); background:#fff7ed; padding:14px 18px; border-radius:8px; margin:14px 0;
+  }
+  .approval-box{
+    border-right:4px solid var(--finance); background:#f0fdf4; padding:14px 18px; border-radius:8px; margin:14px 0;
+  }
+  .note-box{
+    border-right:4px solid var(--sales); background:#eff6ff; padding:14px 18px; border-radius:8px; margin:14px 0;
+  }
+  .perm-box{
+    border-right:4px solid var(--mgmt); background:#f5f3ff; padding:14px 18px; border-radius:8px; margin:14px 0;
+  }
+
+  .journey-grid{display:grid; grid-template-columns:1fr 1fr; gap:20px;}
+  @media (max-width:760px){ .journey-grid{grid-template-columns:1fr;} nav.toc ol{columns:1;} }
+  .dep-card{border:1px solid var(--line); border-radius:12px; padding:18px 20px;}
+  .dep-card h3{margin:0 0 10px; font-size:16px;}
+  .dep-card ol{margin:0; padding-inline-start:20px; font-size:14px;}
+  .dep-card li{margin-bottom:6px;}
+
+  .suggestion{
+    display:flex; gap:14px; padding:14px 0; border-bottom:1px solid var(--line);
+  }
+  .suggestion:last-child{border-bottom:none;}
+  .suggestion .icon{
+    width:34px; height:34px; border-radius:50%; background:#eef2ff; color:#4338ca;
+    display:flex; align-items:center; justify-content:center; font-weight:700; flex:none;
+  }
+  .suggestion h4{margin:0 0 4px; font-size:15px;}
+  .suggestion p{margin:0; color:var(--muted); font-size:14px;}
+
+  .dashboard-mock{
+    border:1px solid var(--line); border-radius:14px; padding:22px; background:#fafbfd;
+  }
+  .dashboard-mock h4{margin:0 0 14px; font-size:15px; color:var(--muted);}
+  .dash-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px;}
+  @media (max-width:760px){ .dash-grid{grid-template-columns:1fr 1fr;} }
+  .dash-item{
+    background:#fff; border:1px solid var(--line); border-radius:10px; padding:14px 16px;
+  }
+  .dash-item .label{font-size:12.5px; color:var(--muted); margin-bottom:4px;}
+  .dash-item .value{font-size:14.5px; font-weight:600;}
+
+  footer{text-align:center; color:var(--muted); font-size:13px; margin-top:20px;}
+  @media print{
+    body{background:#fff;}
+    section{break-inside:avoid; box-shadow:none;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="cover">
+    <h1>سير العملية التجارية والتشغيلية</h1>
+    <p>من فرصة البيع في CRM وحتى إغلاق المشروع — وثيقة تحليل أعمال للعرض على الإدارات واعتماد التصميم قبل مرحلة التنفيذ التقني</p>
+    <div class="tags">
+      <span class="tag">تحليل أعمال (Business Analysis)</span>
+      <span class="tag">بدون تفاصيل تقنية</span>
+      <span class="tag">جاهز للعرض على المدراء</span>
+      <span class="tag">المبيعات · تطوير الأعمال · العمليات · المالية · الإدارة</span>
+    </div>
+  </header>
+
+  <nav class="toc">
+    <h2>محتويات الوثيقة</h2>
+    <ol>
+      <li><a href="#s1">المخطط العام لسير العملية</a></li>
+      <li><a href="#s2">المخطط التفصيلي لكل مرحلة</a></li>
+      <li><a href="#s3">مخطط المسارات المتوازية (Swimlane)</a></li>
+      <li><a href="#s4">نقاط القرار الرئيسية</a></li>
+      <li><a href="#s5">مسار الموافقات</a></li>
+      <li><a href="#s6">حالات وانتقالات الحالة</a></li>
+      <li><a href="#s7">رحلة كل قسم داخل العملية</a></li>
+      <li><a href="#s8">خريطة العملية الشاملة للعرض التقديمي</a></li>
+      <li><a href="#s9">لوحة معلومات الفرصة (Opportunity Dashboard)</a></li>
+      <li><a href="#s10">الصلاحيات ونطاق وصول العمليات</a></li>
+      <li><a href="#s11">مقترحات لتحسين الأداء التشغيلي</a></li>
+    </ol>
+  </nav>
+
+  <div class="legend">
+    <span class="l-sales">● المبيعات</span>
+    <span class="l-bd">● تطوير الأعمال</span>
+    <span class="l-ops">● العمليات</span>
+    <span class="l-finance">● المالية</span>
+    <span class="l-mgmt">● الإدارة</span>
+  </div>
+
+  <div class="note-box">
+    <strong>هيكلة الأدوار:</strong> المبيعات مسؤولة عن إنشاء وإدارة الفرصة من الناحية التجارية. تطوير الأعمال هو الجهة المنسّقة التي تتابع سير الفرصة عبر العمليات والمالية والإدارة حتى إتمام جميع المراحل. العمليات هي القسم الوحيد المسؤول عن الزيارة الميدانية، إعداد الميزانية، إنشاء المشروع، توزيع المهام، التنفيذ، والإغلاق — دون وجود قسم منفصل للمشاريع.
+  </div>
+
+  <!-- 1. HIGH LEVEL -->
+  <section id="s1">
+    <h2><span class="num">1</span> المخطط العام لسير العملية</h2>
+    <p class="sub">نظرة شاملة على رحلة الفرصة من إنشائها وحتى إغلاق المشروع.</p>
+    <div class="mermaid">
+flowchart TD
+  A["المبيعات تُنشئ فرصة البيع في CRM"] --> B["تطوير الأعمال ينسّق ويحرّك الفرصة"]
+  B --> C["الفرصة تصل لقسم العمليات"]
+  C --> D{"هل تتطلب زيارة موقع؟"}
+  D -- نعم --> E["تنفيذ زيارة الموقع"]
+  D -- لا --> F["إعداد الميزانية Budget Builder"]
+  E --> F
+  F --> G["اعتماد مدير المشروع"]
+  G --> H["اعتماد المالية"]
+  H --> I["اعتماد الإدارة"]
+  I --> J["المبيعات تُنشئ عرض السعر"]
+  J --> K["موافقة العميل"]
+  K --> L["إنشاء أمر البيع"]
+  L --> M["إنشاء المشروع من قالب محدد"]
+  M --> N["توزيع المهام وتنفيذ المشروع"]
+  N --> O["إغلاق المشروع"]
+
+  classDef sales fill:#2563eb,color:#fff,stroke:none;
+  classDef bd fill:#0891b2,color:#fff,stroke:none;
+  classDef ops fill:#ea580c,color:#fff,stroke:none;
+  classDef finance fill:#16a34a,color:#fff,stroke:none;
+  classDef mgmt fill:#7c3aed,color:#fff,stroke:none;
+
+  class A,J,K,L sales
+  class B bd
+  class C,D,E,F,G,M,N,O ops
+  class H finance
+  class I mgmt
+    </div>
+  </section>
+
+  <!-- 2. DETAILED -->
+  <section id="s2">
+    <h2><span class="num">2</span> المخطط التفصيلي لكل مرحلة</h2>
+    <p class="sub">تفاصيل كل خطوة من إنشاء الفرصة وحتى إغلاق المشروع.</p>
+    <div class="mermaid">
+flowchart TD
+  A["المبيعات تُنشئ فرصة البيع (بيانات العميل والمشروع)"] --> B["تطوير الأعمال يستلم الفرصة وينسّق مسارها"]
+  B --> C["الفرصة تنتقل رسميًا لمرحلة العمليات"]
+  C --> D["العمليات تحصل على صلاحية الوصول للفرصة المخصصة لها"]
+  D --> E{"هل زيارة الموقع مطلوبة؟"}
+  E -- لا --> N["العمليات تبدأ إعداد الميزانية"]
+  E -- نعم --> F["تنفيذ زيارة الموقع: مسح، قياسات، ملاحظات، صور، مرفقات"]
+  F --> G["ربط الزيارة بالفرصة"]
+  G --> N
+
+  N --> N1["معلومات الميزانية: مدير المشروع، المواقع، تواريخ البدء والانتهاء"]
+  N --> N2["قائمة المشتريات: منتج، مورد، كمية، تكلفة الوحدة، الإجمالي"]
+  N --> N3["قائمة المصروفات: مصروف، مورد، كمية، تكلفة الوحدة، الإجمالي"]
+  N --> N4["قائمة العمالة والموارد: مورد، دور، كمية، مدة، تكلفة، إجمالي"]
+  N1 --> O["الملخص المالي التلقائي: التكلفة الإجمالية، الهامش، الاحتياطي"]
+  N2 --> O
+  N3 --> O
+  N4 --> O
+
+  O --> P{"اعتماد مدير المشروع؟"}
+  P -- رفض/تعديل --> N
+  P -- موافقة --> Q{"اعتماد المالية؟"}
+  Q -- رفض --> N
+  Q -- موافقة --> R{"اعتماد الإدارة؟"}
+  R -- رفض --> N
+  R -- موافقة --> S["حالة الميزانية: معتمدة"]
+
+  S --> T["المبيعات تُنشئ عرض السعر من الميزانية المعتمدة"]
+  T --> U["إضافة الهامش التجاري"]
+  U --> V{"موافقة العميل؟"}
+  V -- طلب تعديل --> T
+  V -- موافقة --> W["إنشاء أمر البيع"]
+
+  W --> X["العمليات تختار قالب المشروع"]
+  X --> Y["إنشاء المشروع تلقائيًا مرتبطًا بالفرصة"]
+  Y --> Z["توزيع المهام على فريق التنفيذ"]
+  Z --> AA["تنفيذ المشروع ومتابعة الحالة"]
+  AA --> AB["إغلاق المشروع"]
+
+  classDef sales fill:#2563eb,color:#fff,stroke:none;
+  classDef bd fill:#0891b2,color:#fff,stroke:none;
+  classDef ops fill:#ea580c,color:#fff,stroke:none;
+  classDef finance fill:#16a34a,color:#fff,stroke:none;
+  classDef mgmt fill:#7c3aed,color:#fff,stroke:none;
+
+  class A,T,U,V,W sales
+  class B bd
+  class C,D,E,F,G,N,N1,N2,N3,N4,O,P,X,Y,Z,AA,AB ops
+  class Q finance
+  class R,S mgmt
+    </div>
+  </section>
+
+  <!-- 3. SWIMLANE -->
+  <section id="s3">
+    <h2><span class="num">3</span> مخطط المسارات المتوازية (Swimlane)</h2>
+    <p class="sub">المسؤوليات موزعة على خمسة أدوار: المبيعات، تطوير الأعمال، العمليات، المالية، الإدارة.</p>
+    <div class="mermaid">
+flowchart TB
+  subgraph LANE_SALES["🔵 المبيعات"]
+    direction TB
+    S1["إنشاء فرصة البيع"]
+    S2["إنشاء عرض السعر بعد الاعتماد"]
+    S3["إضافة الهامش التجاري"]
+    S4["متابعة موافقة العميل"]
+    S5["إنشاء أمر البيع"]
+  end
+
+  subgraph LANE_BD["🔷 تطوير الأعمال"]
+    direction TB
+    D1["استلام الفرصة من المبيعات"]
+    D2["تنسيق ومتابعة الفرصة عبر العمليات والمالية والإدارة"]
+    D3["ضمان تقدّم الفرصة عبر جميع مراحل الاعتماد"]
+  end
+
+  subgraph LANE_OPS["🟠 العمليات"]
+    direction TB
+    O1["استلام الفرصة المخصصة"]
+    O2["تحديد الحاجة لزيارة موقع"]
+    O3["تنفيذ زيارة الموقع"]
+    O4["إعداد الميزانية Budget Builder"]
+    O5["إنشاء المشروع من القالب"]
+    O6["توزيع المهام"]
+    O7["تنفيذ المشروع"]
+    O8["إغلاق المشروع"]
+  end
+
+  subgraph LANE_FINANCE["🟢 المالية"]
+    direction TB
+    F1["مراجعة الملخص المالي"]
+    F2["اعتماد أو رفض الميزانية"]
+  end
+
+  subgraph LANE_MGMT["🟣 الإدارة"]
+    direction TB
+    M1["المراجعة النهائية للميزانية"]
+    M2["الاعتماد النهائي"]
+  end
+
+  S1 --> D1
+  D1 --> D2
+  D2 --> O1
+  O1 --> O2
+  O2 --> O3
+  O2 --> O4
+  O3 --> O4
+  O4 --> O4a["اعتماد مدير المشروع"]
+  O4a --> F1
+  F1 --> F2
+  F2 --> M1
+  M1 --> M2
+  M2 --> S2
+  S2 --> S3
+  S3 --> S4
+  S4 --> S5
+  S5 --> O5
+  O5 --> O6
+  O6 --> O7
+  O7 --> O8
+  D2 --> D3
+  D3 --> S4
+
+  classDef sales fill:#2563eb,color:#fff,stroke:none;
+  classDef bd fill:#0891b2,color:#fff,stroke:none;
+  classDef ops fill:#ea580c,color:#fff,stroke:none;
+  classDef finance fill:#16a34a,color:#fff,stroke:none;
+  classDef mgmt fill:#7c3aed,color:#fff,stroke:none;
+
+  class S1,S2,S3,S4,S5 sales
+  class D1,D2,D3 bd
+  class O1,O2,O3,O4,O4a,O5,O6,O7,O8 ops
+  class F1,F2 finance
+  class M1,M2 mgmt
+    </div>
+  </section>
+
+  <!-- 4. DECISION POINTS -->
+  <section id="s4">
+    <h2><span class="num">4</span> نقاط القرار الرئيسية</h2>
+    <p class="sub">النقاط التي تتفرع عندها العملية بناءً على قرار أو شرط عمل محدد.</p>
+
+    <div class="decision-box">
+      <strong>هل زيارة الموقع مطلوبة؟</strong>
+      <p style="margin:6px 0 0;">يحدده قسم العمليات بناءً على طبيعة المشروع، قبل بدء إعداد الميزانية.</p>
+    </div>
+    <div class="decision-box">
+      <strong>هل يعتمد مدير المشروع الميزانية؟</strong>
+      <p style="margin:6px 0 0;">أول بوابة اعتماد بعد إعداد الميزانية من قسم العمليات؛ الرفض يعيدها للتعديل داخل نفس القسم.</p>
+    </div>
+    <div class="decision-box">
+      <strong>هل توافق المالية على الميزانية؟</strong>
+      <p style="margin:6px 0 0;">تراجع المالية الملخص المالي فقط (التكلفة، الهامش، الاحتياطي).</p>
+    </div>
+    <div class="decision-box">
+      <strong>هل توافق الإدارة على الميزانية؟</strong>
+      <p style="margin:6px 0 0;">الاعتماد النهائي والحاسم؛ بعده فقط تتحول الميزانية إلى حالة "معتمدة".</p>
+    </div>
+    <div class="decision-box">
+      <strong>هل يوافق العميل على عرض السعر؟</strong>
+      <p style="margin:6px 0 0;">في حال طلب تعديل، تعود المبيعات لتحديث العرض؛ وفي حال الموافقة يتم إنشاء أمر البيع مباشرة.</p>
+    </div>
+  </section>
+
+  <!-- 5. APPROVAL FLOW -->
+  <section id="s5">
+    <h2><span class="num">5</span> مسار الموافقات</h2>
+    <p class="sub">تسلسل ثلاثي إلزامي ومتتابع على الميزانية، يبدأ من مدير المشروع وينتهي بالإدارة.</p>
+    <div class="mermaid">
+flowchart LR
+  A["الميزانية جاهزة للمراجعة"] --> B["اعتماد مدير المشروع"]
+  B -- موافقة --> C["اعتماد المالية"]
+  B -- رفض --> A2["إعادة للتعديل"] --> A
+  C -- موافقة --> D["اعتماد الإدارة"]
+  C -- رفض --> A2
+  D -- موافقة --> E["✅ الميزانية معتمدة نهائيًا"]
+  D -- رفض --> A2
+  E --> F["تفعيل زر إنشاء عرض السعر"]
+
+  classDef ops fill:#ea580c,color:#fff,stroke:none;
+  classDef finance fill:#16a34a,color:#fff,stroke:none;
+  classDef mgmt fill:#7c3aed,color:#fff,stroke:none;
+  classDef sales fill:#2563eb,color:#fff,stroke:none;
+  classDef reject fill:#dc2626,color:#fff,stroke:none;
+
+  class B ops
+  class C finance
+  class D,E mgmt
+  class F sales
+  class A2 reject
+    </div>
+    <div class="approval-box">
+      <strong>ملاحظة:</strong> يُنصح بإلزامية إدخال سبب واضح عند أي رفض في أي من المراحل الثلاث، حتى يتمكن قسم العمليات من التعديل بدقة دون الحاجة لجولات توضيح إضافية.
+    </div>
+  </section>
+
+  <!-- 6. STATUS TRANSITIONS -->
+  <section id="s6">
+    <h2><span class="num">6</span> حالات وانتقالات الحالة</h2>
+    <p class="sub">دورة حياة الفرصة من الإنشاء وحتى إغلاق المشروع.</p>
+    <div class="mermaid">
+stateDiagram-v2
+  [*] --> جديدة
+  جديدة --> قيد_تنسيق_تطوير_الأعمال
+  قيد_تنسيق_تطوير_الأعمال --> مرحلة_العمليات
+  مرحلة_العمليات --> قرار_زيارة_الموقع
+  قرار_زيارة_الموقع --> جارٍ_تنفيذ_زيارة_الموقع : مطلوبة
+  قرار_زيارة_الموقع --> جارٍ_إعداد_الميزانية : غير مطلوبة
+  جارٍ_تنفيذ_زيارة_الموقع --> جارٍ_إعداد_الميزانية
+  جارٍ_إعداد_الميزانية --> بانتظار_اعتماد_مدير_المشروع
+  بانتظار_اعتماد_مدير_المشروع --> بانتظار_اعتماد_المالية : موافقة
+  بانتظار_اعتماد_مدير_المشروع --> جارٍ_إعداد_الميزانية : رفض
+  بانتظار_اعتماد_المالية --> بانتظار_اعتماد_الإدارة : موافقة
+  بانتظار_اعتماد_المالية --> جارٍ_إعداد_الميزانية : رفض
+  بانتظار_اعتماد_الإدارة --> ميزانية_معتمدة : موافقة
+  بانتظار_اعتماد_الإدارة --> جارٍ_إعداد_الميزانية : رفض
+  ميزانية_معتمدة --> عرض_سعر_تم_إنشاؤه
+  عرض_سعر_تم_إنشاؤه --> بانتظار_موافقة_العميل
+  بانتظار_موافقة_العميل --> عرض_سعر_تم_إنشاؤه : طلب تعديل
+  بانتظار_موافقة_العميل --> أمر_بيع_تم_إنشاؤه : موافقة
+  أمر_بيع_تم_إنشاؤه --> مشروع_تم_إنشاؤه
+  مشروع_تم_إنشاؤه --> مهام_موزعة
+  مهام_موزعة --> قيد_التنفيذ
+  قيد_التنفيذ --> مشروع_مغلق
+  مشروع_مغلق --> [*]
+    </div>
+    <table>
+      <tr><th>الحالة</th><th>الوصف</th><th>المسؤول</th></tr>
+      <tr><td>جديدة</td><td>الفرصة تحت متابعة المبيعات</td><td>المبيعات</td></tr>
+      <tr><td>قيد تنسيق تطوير الأعمال</td><td>تطوير الأعمال يتابع الفرصة قبل وصولها للعمليات</td><td>تطوير الأعمال</td></tr>
+      <tr><td>مرحلة العمليات</td><td>العمليات لديها صلاحية الوصول وبدأت العمل على الفرصة</td><td>العمليات</td></tr>
+      <tr><td>قرار / تنفيذ زيارة الموقع</td><td>مرحلة اختيارية تسبق الميزانية مباشرة</td><td>العمليات</td></tr>
+      <tr><td>جارٍ إعداد الميزانية</td><td>تعبئة المشتريات، المصروفات، العمالة، الملخص المالي</td><td>العمليات</td></tr>
+      <tr><td>بانتظار اعتماد مدير المشروع/المالية/الإدارة</td><td>ثلاث محطات اعتماد متتابعة وإلزامية</td><td>حسب المرحلة</td></tr>
+      <tr><td>ميزانية معتمدة</td><td>الحالة التي تفتح إمكانية إنشاء عرض السعر</td><td>—</td></tr>
+      <tr><td>عرض سعر تم إنشاؤه / بانتظار موافقة العميل</td><td>إصدار العرض النهائي بالهامش التجاري</td><td>المبيعات</td></tr>
+      <tr><td>أمر بيع تم إنشاؤه</td><td>تأكيد الصفقة تجاريًا بعد موافقة العميل</td><td>المبيعات</td></tr>
+      <tr><td>مشروع تم إنشاؤه / مهام موزعة / قيد التنفيذ / مغلق</td><td>دورة حياة التنفيذ الكاملة للمشروع</td><td>العمليات</td></tr>
+    </table>
+  </section>
+
+  <!-- 7. USER JOURNEYS -->
+  <section id="s7">
+    <h2><span class="num">7</span> رحلة كل قسم داخل العملية</h2>
+    <p class="sub">ماذا يفعل كل قسم تحديدًا، من منظوره الخاص.</p>
+    <div class="journey-grid">
+      <div class="dep-card">
+        <h3 style="color:var(--sales);">🔵 المبيعات</h3>
+        <ol>
+          <li>إنشاء فرصة البيع وتسجيل بيانات العميل والمشروع</li>
+          <li>متابعة تقدم الفرصة عبر لوحة معلومات الفرصة</li>
+          <li>إنشاء عرض السعر بعد اعتماد الميزانية</li>
+          <li>إضافة الهامش التجاري وإرسال العرض للعميل</li>
+          <li>متابعة موافقة العميل وإنشاء أمر البيع</li>
+        </ol>
+      </div>
+      <div class="dep-card">
+        <h3 style="color:var(--bd);">🔷 تطوير الأعمال</h3>
+        <ol>
+          <li>استلام الفرصة من المبيعات فور تأهيلها</li>
+          <li>تنسيق انتقالها إلى قسم العمليات</li>
+          <li>متابعة سير الميزانية عبر مراحل الاعتماد الثلاث</li>
+          <li>ضمان عدم توقف الفرصة في أي مرحلة دون متابعة</li>
+        </ol>
+      </div>
+      <div class="dep-card">
+        <h3 style="color:var(--ops);">🟠 العمليات</h3>
+        <ol>
+          <li>استلام الفرصة المخصصة لها</li>
+          <li>تحديد الحاجة لزيارة موقع وتنفيذها عند الحاجة</li>
+          <li>إعداد الميزانية الكاملة واعتمادها داخليًا عبر مدير المشروع</li>
+          <li>إنشاء المشروع من القالب بعد إنشاء أمر البيع</li>
+          <li>توزيع المهام وتنفيذ المشروع حتى إغلاقه</li>
+        </ol>
+      </div>
+      <div class="dep-card">
+        <h3 style="color:var(--finance);">🟢 المالية</h3>
+        <ol>
+          <li>استلام الميزانية بعد اعتماد مدير المشروع</li>
+          <li>مراجعة الملخص المالي فقط</li>
+          <li>اعتماد الميزانية أو رفضها مع توضيح السبب</li>
+        </ol>
+      </div>
+      <div class="dep-card">
+        <h3 style="color:var(--mgmt);">🟣 الإدارة</h3>
+        <ol>
+          <li>استلام الميزانية بعد اعتماد المالية</li>
+          <li>المراجعة النهائية الشاملة</li>
+          <li>الاعتماد النهائي أو الرفض مع الملاحظات</li>
+          <li>متابعة أداء المشاريع من لوحات عليا</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. VISUAL PROCESS MAP -->
+  <section id="s8">
+    <h2><span class="num">8</span> خريطة العملية الشاملة للعرض التقديمي</h2>
+    <p class="sub">نسخة مكثفة بصريًا لعرضها على شاشة واحدة أثناء الاجتماع.</p>
+    <div class="mermaid">
+flowchart LR
+  subgraph المرحلة_1["1️⃣ البداية التجارية"]
+    A["فرصة CRM"] --> B["تنسيق تطوير الأعمال"]
+  end
+  subgraph المرحلة_2["2️⃣ الميدان والميزانية"]
+    C{"زيارة موقع؟"} --> D["Budget Builder"]
+  end
+  subgraph المرحلة_3["3️⃣ الاعتماد"]
+    E["مدير المشروع"] --> F["المالية"] --> G["الإدارة"]
+  end
+  subgraph المرحلة_4["4️⃣ الإغلاق التجاري"]
+    H["عرض السعر"] --> I["موافقة العميل"] --> J["أمر البيع"]
+  end
+  subgraph المرحلة_5["5️⃣ التنفيذ"]
+    K["إنشاء المشروع"] --> L["توزيع المهام وتنفيذ وإغلاق"]
+  end
+
+  B --> C
+  D --> E
+  G --> H
+  J --> K
+
+  classDef s1 fill:#2563eb,color:#fff,stroke:none;
+  classDef s2 fill:#ea580c,color:#fff,stroke:none;
+  classDef s3 fill:#7c3aed,color:#fff,stroke:none;
+  classDef s4 fill:#0891b2,color:#fff,stroke:none;
+  classDef s5 fill:#16a34a,color:#fff,stroke:none;
+  class A,B s1
+  class C,D s2
+  class E,F,G s3
+  class H,I,J s4
+  class K,L s5
+    </div>
+  </section>
+
+  <!-- 9. OPPORTUNITY DASHBOARD -->
+  <section id="s9">
+    <h2><span class="num">9</span> لوحة معلومات الفرصة (Opportunity Dashboard)</h2>
+    <p class="sub">الفرصة في CRM تبقى نقطة المرجع المركزية طوال دورة حياة المشروع، وتعرض دائمًا العناصر التالية دون الحاجة لفتح أي وحدة أخرى.</p>
+    <div class="dashboard-mock">
+      <h4>عرض تلقائي داخل بطاقة الفرصة</h4>
+      <div class="dash-grid">
+        <div class="dash-item"><div class="label">المرحلة الحالية</div><div class="value">Current Stage</div></div>
+        <div class="dash-item"><div class="label">حالة الميزانية</div><div class="value">Budget Status</div></div>
+        <div class="dash-item"><div class="label">حالة الاعتماد</div><div class="value">Approval Status</div></div>
+        <div class="dash-item"><div class="label">حالة عرض السعر</div><div class="value">Quotation Status</div></div>
+        <div class="dash-item"><div class="label">حالة أمر البيع</div><div class="value">Sales Order Status</div></div>
+        <div class="dash-item"><div class="label">المشروع المرتبط</div><div class="value">Linked Project</div></div>
+        <div class="dash-item"><div class="label">تقدم المشروع</div><div class="value">Project Progress</div></div>
+        <div class="dash-item"><div class="label">نسبة إنجاز المهام</div><div class="value">Task Completion %</div></div>
+        <div class="dash-item"><div class="label">المهام المفتوحة</div><div class="value">Open Tasks</div></div>
+        <div class="dash-item"><div class="label">المهام المتأخرة</div><div class="value">Overdue Tasks</div></div>
+        <div class="dash-item"><div class="label">المهام المكتملة</div><div class="value">Completed Tasks</div></div>
+      </div>
+    </div>
+    <div class="note-box" style="margin-top:18px;">
+      هذه اللوحة تتيح للمبيعات وتطوير الأعمال والإدارة متابعة كامل الصفقة والمشروع دون الحاجة للدخول إلى وحدات العمليات أو المالية بشكل مباشر.
+    </div>
+  </section>
+
+  <!-- 10. PERMISSIONS -->
+  <section id="s10">
+    <h2><span class="num">10</span> الصلاحيات ونطاق وصول العمليات</h2>
+    <p class="sub">قسم العمليات لا يرى إلا الفرص المخصصة له، مع صلاحيات محددة بدقة لكل عنصر.</p>
+    <table>
+      <tr><th>العنصر</th><th>المبيعات</th><th>تطوير الأعمال</th><th>العمليات</th><th>المالية</th><th>الإدارة</th></tr>
+      <tr><td>تفاصيل الفرصة</td><td>كامل</td><td>كامل</td><td>الفرص المخصصة فقط</td><td>عند الحاجة</td><td>كامل</td></tr>
+      <tr><td>زيارة الموقع</td><td>عرض فقط</td><td>عرض فقط</td><td>كامل (تنفيذ)</td><td>—</td><td>عرض فقط</td></tr>
+      <tr><td>Budget Builder (تفاصيل تشغيلية)</td><td>—</td><td>عرض فقط</td><td>كامل (إعداد)</td><td>عرض فقط</td><td>عرض فقط</td></tr>
+      <tr><td>الملخص المالي</td><td>❌</td><td>❌</td><td>❌</td><td>✅ كامل</td><td>✅ كامل</td></tr>
+      <tr><td>ملخص عرض السعر</td><td>كامل</td><td>عرض فقط</td><td>❌ غير متاح</td><td>عرض فقط</td><td>عرض فقط</td></tr>
+      <tr><td>إنشاء عرض السعر / أمر البيع</td><td>✅ حصري</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+      <tr><td>المشروع المرتبط بعد إنشائه</td><td>عرض فقط</td><td>عرض فقط</td><td>كامل (تنفيذ وإغلاق)</td><td>—</td><td>كامل</td></tr>
+    </table>
+    <div class="perm-box">
+      <strong>صلاحيات قسم العمليات تحديدًا:</strong> عرض تفاصيل الفرصة المخصصة له، تنفيذ زيارات الموقع، إعداد الميزانية، والوصول إلى المشروع المرتبط بعد إنشائه. ملخص عرض السعر غير متاح لقسم العمليات.
+    </div>
+  </section>
+
+  <!-- 11. SUGGESTIONS -->
+  <section id="s11">
+    <h2><span class="num">11</span> مقترحات لتحسين الأداء التشغيلي</h2>
+    <p class="sub">ملاحظات لمناقشتها مع الإدارات من منظور الأعمال فقط.</p>
+
+    <div class="suggestion">
+      <div class="icon">1</div>
+      <div><h4>حدود اعتماد تلقائية حسب قيمة الميزانية</h4>
+      <p>الميزانيات الصغيرة قد لا تحتاج موافقة الإدارة، ويكتفى باعتماد مدير المشروع والمالية فقط.</p></div>
+    </div>
+    <div class="suggestion">
+      <div class="icon">2</div>
+      <div><h4>تحديد مهلة زمنية (SLA) لكل مرحلة اعتماد</h4>
+      <p>مثال: 24 ساعة لمدير المشروع، 48 ساعة للمالية، 48 ساعة للإدارة، مع تنبيه تلقائي عند تجاوز المهلة.</p></div>
+    </div>
+    <div class="suggestion">
+      <div class="icon">3</div>
+      <div><h4>توثيق إلزامي لسبب الرفض في أي مرحلة اعتماد</h4>
+      <p>لتفادي تكرار دورات التعديل بدون فهم واضح لما هو مطلوب.</p></div>
+    </div>
+    <div class="suggestion">
+      <div class="icon">4</div>
+      <div><h4>مالك واضح لقرار "هل زيارة الموقع مطلوبة؟"</h4>
+      <p>تحديد مدير العمليات كصاحب قرار وحيد لتفادي الاجتهاد الفردي غير الموحّد.</p></div>
+    </div>
+    <div class="suggestion">
+      <div class="icon">5</div>
+      <div><h4>قوالب مشاريع موحدة تُراجَع دوريًا</h4>
+      <p>مراجعة قوالب المشاريع بشكل دوري لضمان أنها تعكس أنواع المشاريع الفعلية.</p></div>
+    </div>
+    <div class="suggestion">
+      <div class="icon">6</div>
+      <div><h4>مؤشر أداء لزمن الدورة الكاملة</h4>
+      <p>قياس الزمن من إنشاء الفرصة وحتى إغلاق المشروع كمؤشر أداء رئيسي (KPI) شامل.</p></div>
+    </div>
+    <div class="suggestion">
+      <div class="icon">7</div>
+      <div><h4>تتبع زمن استجابة العميل على عرض السعر</h4>
+      <p>قياس الفترة بين إرسال العرض وموافقة العميل، لتحديد فرص التسريع في المرحلة التجارية.</p></div>
+    </div>
+    <div class="suggestion">
+      <div class="icon">8</div>
+      <div><h4>نقطة تنسيق واحدة موثقة بين تطوير الأعمال والعمليات</h4>
+      <p>تحديد نقطة تسليم واضحة (checklist) عند انتقال الفرصة من تطوير الأعمال إلى العمليات لضمان اكتمال جميع البيانات المطلوبة.</p></div>
+    </div>
+  </section>
+
+  <footer>
+    وثيقة تحليل أعمال — جاهزة لمراجعة مدراء الأقسام واعتماد التصميم قبل مرحلة التنفيذ التقني
+  </footer>
+</div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad:true,
+    theme:"base",
+    themeVariables:{ fontFamily:"Segoe UI, Tahoma, Arial, sans-serif", fontSize:"14px" },
+    flowchart:{ curve:"basis", htmlLabels:true },
+    securityLevel:"loose"
+  });
+</script>
+</body>
+</html>

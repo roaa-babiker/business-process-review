@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<title>Business & Operational Workflow — From Opportunity to Project Closure</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
+<style>
+  :root{
+    --sales:#2563eb; --bd:#0891b2; --ops:#ea580c; --finance:#16a34a; --mgmt:#7c3aed;
+    --bg:#f7f8fb; --ink:#1f2430; --muted:#5b6472; --card:#ffffff; --line:#e3e6ec;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Segoe UI","Helvetica Neue","Arial",sans-serif;
+    line-height:1.7;
+  }
+  .wrap{max-width:1100px; margin:0 auto; padding:32px 24px 80px;}
+  header.cover{
+    background:linear-gradient(135deg,#1e293b,#334155);
+    color:#fff; padding:56px 40px; border-radius:18px; margin-bottom:36px;
+  }
+  header.cover h1{margin:0 0 10px; font-size:30px;}
+  header.cover p{margin:0; color:#cbd5e1; font-size:16px;}
+  .tags{display:flex; gap:10px; flex-wrap:wrap; margin-top:20px;}
+  .tag{background:rgba(255,255,255,.12); padding:6px 14px; border-radius:999px; font-size:13px;}
+
+  nav.toc{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:22px 26px; margin-bottom:36px;}
+  nav.toc h2{margin-top:0; font-size:17px;}
+  nav.toc ol{margin:0; padding-inline-start:22px; columns:2; gap:24px;}
+  nav.toc li{margin-bottom:6px; font-size:14.5px;}
+  nav.toc a{color:var(--ink); text-decoration:none;}
+  nav.toc a:hover{color:var(--sales); text-decoration:underline;}
+
+  section{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:28px 30px; margin-bottom:28px;}
+  section h2{
+    font-size:20px; margin:0 0 4px; display:flex; align-items:center; gap:10px;
+  }
+  section h2 .num{
+    background:var(--ink); color:#fff; width:30px; height:30px; border-radius:8px;
+    display:inline-flex; align-items:center; justify-content:center; font-size:14px; flex:none;
+  }
+  section .sub{color:var(--muted); font-size:14px; margin:0 0 18px;}
+  .mermaid{background:#fbfbfd; border:1px dashed var(--line); border-radius:10px; padding:18px; overflow:auto;}
+
+  .legend{display:flex; flex-wrap:wrap; gap:10px; margin:14px 0 6px;}
+  .legend span{
+    font-size:13px; padding:5px 12px; border-radius:999px; color:#fff; display:inline-flex; align-items:center; gap:6px;
+  }
+  .l-sales{background:var(--sales);} .l-bd{background:var(--bd);} .l-ops{background:var(--ops);}
+  .l-finance{background:var(--finance);} .l-mgmt{background:var(--mgmt);}
+
+  table{width:100%; border-collapse:collapse; margin-top:14px; font-size:14.5px;}
+  th,td{border:1px solid var(--line); padding:10px 12px; text-align:left; vertical-align:top;}
+  th{background:#f1f3f7;}
+  tr:nth-child(even) td{background:#fafbfc;}
+
+  .decision-box{
+    border-left:4px solid var(--ops); background:#fff7ed; padding:14px 18px; border-radius:8px; margin:14px 0;
+  }
+  .approval-box{
+    border-left:4px solid var(--finance); background:#f0fdf4; padding:14px 18px; border-radius:8px; margin:14px 0;
+  }
+  .note-box{
+    border-left:4px solid var(--sales); background:#eff6ff; padding:14px 18px; border-radius:8px; margin:14px 0;
+  }
+  .perm-box{
+    border-left:4px solid var(--mgmt); background:#f5f3ff; padding:14px 18px; border-radius:8px; margin:14px 0;
+  }
+
+  .journey-grid{display:grid; grid-template-columns:1fr 1fr; gap:20px;}
+  @media (max-width:760px){ .journey-grid{grid-template-columns:1fr;} nav.toc ol{columns:1;} }
+  .dep-card{border:1px solid var(--line); border-radius:12px; padding:18px 20px;}
+  .dep-card h3{margin:0 0 10px; font-size:16px;}
+  .dep-card ol{margin:0; padding-inline-start:20px; font-size:14px;}
+  .dep-card li{margin-bottom:6px;}
+
+  .suggestion{
+    display:flex; gap:14px; padding:14px 0; border-bottom:1px solid var(--line);
+  }
+  .suggestion:last-child{border-bottom:none;}
+  .suggestion .icon{
+    width:34px; height:34px; border-radius:50%; background:#eef2ff; color:#4338ca;
+    display:flex; align-items:center; justify-content:center; font-weight:700; flex:none;
+  }
+  .suggestion h4{margin:0 0 4px; font-size:15px;}
+  .suggestion p{margin:0; color:var(--muted); font-size:14px;}
+
+  .dashboard-mock{
+    border:1px solid var(--line); border-radius:14px; padding:22px; background:#fafbfd;
+  }
+  .dashboard-mock h4{margin:0 0 14px; font-size:15px; color:var(--muted);}
+  .dash-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px;}
+  @media (max-width:760px){ .dash-grid{grid-template-columns:1fr 1fr;} }
+  .dash-item{
+    background:#fff; border:1px solid var(--line); border-radius:10px; padding:14px 16px;
+  }
+  .dash-item .label{font-size:12.5px; color:var(--muted); margin-bottom:4px;}
+  .dash-item .value{font-size:14.5px; font-weight:600;}
+
+  footer{text-align:center; color:var(--muted); font-size:13px; margin-top:20px;}
+  @media print{
+    body{background:#fff;}
+    section{break-inside:avoid; box-shadow:none;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="cover">
+    <h1>Business & Operational Workflow</h1>
+    <p>From the CRM Sales Opportunity to Project Closure — a business analysis document for department review and design sign-off ahead of technical implementation</p>
+    <div class="tags">
+      <span class="tag">Business Analysis</span>
+      <span class="tag">No technical detail</span>
+      <span class="tag">Presentation-ready</span>
+      <span class="tag">Sales · Business Development · Operations · Finance · Management</span>
+    </div>
+  </header>
+
+  <nav class="toc">
+    <h2>Contents</h2>
+    <ol>
+      <li><a href="#s1">High-Level Workflow</a></li>
+      <li><a href="#s2">Detailed Workflow (Every Stage)</a></li>
+      <li><a href="#s3">Swimlane Diagram</a></li>
+      <li><a href="#s4">Key Decision Points</a></li>
+      <li><a href="#s5">Approval Flow</a></li>
+      <li><a href="#s6">Status Transitions</a></li>
+      <li><a href="#s7">Department User Journeys</a></li>
+      <li><a href="#s8">Visual Process Map</a></li>
+      <li><a href="#s9">Opportunity Dashboard</a></li>
+      <li><a href="#s10">Permissions & Operations Access</a></li>
+      <li><a href="#s11">Suggestions to Improve Operational Performance</a></li>
+    </ol>
+  </nav>
+
+  <div class="legend">
+    <span class="l-sales">● Sales</span>
+    <span class="l-bd">● Business Development</span>
+    <span class="l-ops">● Operations</span>
+    <span class="l-finance">● Finance</span>
+    <span class="l-mgmt">● Management</span>
+  </div>
+
+  <div class="note-box">
+    <strong>Role structure:</strong> Sales owns the opportunity from a commercial standpoint — creating and managing it. Business Development is the coordinating role that follows the opportunity through Operations, Finance, and Management until every stage is complete. Operations is the single department responsible for the site visit, budget preparation, project creation, task assignment, execution, and closure — there is no separate project team.
+  </div>
+
+  <!-- 1. HIGH LEVEL -->
+  <section id="s1">
+    <h2><span class="num">1</span> High-Level Workflow</h2>
+    <p class="sub">An end-to-end view of the opportunity's journey, from creation through project closure.</p>
+    <div class="mermaid">
+flowchart TD
+  A["Sales creates the CRM Opportunity"] --> B["Business Development coordinates and drives the opportunity forward"]
+  B --> C["Opportunity reaches Operations"]
+  C --> D{"Is a Site Visit required?"}
+  D -- Yes --> E["Site Visit is carried out"]
+  D -- No --> F["Budget Builder is prepared"]
+  E --> F
+  F --> G["Project Manager Approval"]
+  G --> H["Finance Approval"]
+  H --> I["Management Approval"]
+  I --> J["Sales creates the Quotation"]
+  J --> K["Customer Approval"]
+  K --> L["Sales Order is created"]
+  L --> M["Project is created from a Template"]
+  M --> N["Tasks are assigned and the Project is executed"]
+  N --> O["Project Closure"]
+
+  classDef sales fill:#2563eb,color:#fff,stroke:none;
+  classDef bd fill:#0891b2,color:#fff,stroke:none;
+  classDef ops fill:#ea580c,color:#fff,stroke:none;
+  classDef finance fill:#16a34a,color:#fff,stroke:none;
+  classDef mgmt fill:#7c3aed,color:#fff,stroke:none;
+
+  class A,J,K,L sales
+  class B bd
+  class C,D,E,F,G,M,N,O ops
+  class H finance
+  class I mgmt
+    </div>
+  </section>
+
+  <!-- 2. DETAILED -->
+  <section id="s2">
+    <h2><span class="num">2</span> Detailed Workflow (Every Stage)</h2>
+    <p class="sub">Full detail of every step, from opportunity creation through project closure.</p>
+    <div class="mermaid">
+flowchart TD
+  A["Sales creates the Opportunity (customer & project data)"] --> B["Business Development receives the opportunity and coordinates its path"]
+  B --> C["Opportunity is formally moved to the Operations stage"]
+  C --> D["Operations gains access to the opportunity assigned to them"]
+  D --> E{"Is a Site Visit required?"}
+  E -- No --> N["Operations begins the Budget Builder"]
+  E -- Yes --> F["Site Visit: survey, measurements, notes, photos, attachments"]
+  F --> G["Site Visit is linked to the Opportunity"]
+  G --> N
+
+  N --> N1["Budget info: Project Manager, locations, start & end dates"]
+  N --> N2["Purchases list: product, vendor, quantity, unit cost, total"]
+  N --> N3["Expenses list: expense, vendor, quantity, unit cost, total"]
+  N --> N4["Manpower/Resources list: resource, role, quantity, duration, cost, total"]
+  N1 --> O["Automatic Financial Summary: total cost, margin, allowance"]
+  N2 --> O
+  N3 --> O
+  N4 --> O
+
+  O --> P{"Project Manager approval?"}
+  P -- Rejected/Revise --> N
+  P -- Approved --> Q{"Finance approval?"}
+  Q -- Rejected --> N
+  Q -- Approved --> R{"Management approval?"}
+  R -- Rejected --> N
+  R -- Approved --> S["Budget status: Approved"]
+
+  S --> T["Sales creates the Quotation from the approved Budget"]
+  T --> U["Commercial margin is added"]
+  U --> V{"Customer approval?"}
+  V -- Requests revision --> T
+  V -- Approved --> W["Sales Order is created"]
+
+  W --> X["Operations selects the Project Template"]
+  X --> Y["Project is automatically created and linked to the Opportunity"]
+  Y --> Z["Tasks are assigned to the execution team"]
+  Z --> AA["Project is executed and tracked"]
+  AA --> AB["Project Closure"]
+
+  classDef sales fill:#2563eb,color:#fff,stroke:none;
+  classDef bd fill:#0891b2,color:#fff,stroke:none;
+  classDef ops fill:#ea580c,color:#fff,stroke:none;
+  classDef finance fill:#16a34a,color:#fff,stroke:none;
+  classDef mgmt fill:#7c3aed,color:#fff,stroke:none;
+
+  class A,T,U,V,W sales
+  class B bd
+  class C,D,E,F,G,N,N1,N2,N3,N4,O,P,X,Y,Z,AA,AB ops
+  class Q finance
+  class R,S mgmt
+    </div>
+  </section>
+
+  <!-- 3. SWIMLANE -->
+  <section id="s3">
+    <h2><span class="num">3</span> Swimlane Diagram</h2>
+    <p class="sub">Responsibilities across five roles: Sales, Business Development, Operations, Finance, Management.</p>
+    <div class="mermaid">
+flowchart TB
+  subgraph LANE_SALES["🔵 Sales"]
+    direction TB
+    S1["Creates the Opportunity"]
+    S2["Creates the Quotation after approval"]
+    S3["Adds the commercial margin"]
+    S4["Follows up on Customer Approval"]
+    S5["Creates the Sales Order"]
+  end
+
+  subgraph LANE_BD["🔷 Business Development"]
+    direction TB
+    D1["Receives the Opportunity from Sales"]
+    D2["Coordinates and follows the Opportunity through Operations, Finance, and Management"]
+    D3["Ensures the Opportunity progresses through every approval stage"]
+  end
+
+  subgraph LANE_OPS["🟠 Operations"]
+    direction TB
+    O1["Receives the assigned Opportunity"]
+    O2["Determines whether a Site Visit is needed"]
+    O3["Performs the Site Visit"]
+    O4["Prepares the Budget Builder"]
+    O5["Creates the Project from Template"]
+    O6["Assigns tasks"]
+    O7["Executes the Project"]
+    O8["Closes the Project"]
+  end
+
+  subgraph LANE_FINANCE["🟢 Finance"]
+    direction TB
+    F1["Reviews the Financial Summary"]
+    F2["Approves or rejects the Budget"]
+  end
+
+  subgraph LANE_MGMT["🟣 Management"]
+    direction TB
+    M1["Final review of the Budget"]
+    M2["Final approval"]
+  end
+
+  S1 --> D1
+  D1 --> D2
+  D2 --> O1
+  O1 --> O2
+  O2 --> O3
+  O2 --> O4
+  O3 --> O4
+  O4 --> O4a["Project Manager Approval"]
+  O4a --> F1
+  F1 --> F2
+  F2 --> M1
+  M1 --> M2
+  M2 --> S2
+  S2 --> S3
+  S3 --> S4
+  S4 --> S5
+  S5 --> O5
+  O5 --> O6
+  O6 --> O7
+  O7 --> O8
+  D2 --> D3
+  D3 --> S4
+
+  classDef sales fill:#2563eb,color:#fff,stroke:none;
+  classDef bd fill:#0891b2,color:#fff,stroke:none;
+  classDef ops fill:#ea580c,color:#fff,stroke:none;
+  classDef finance fill:#16a34a,color:#fff,stroke:none;
+  classDef mgmt fill:#7c3aed,color:#fff,stroke:none;
+
+  class S1,S2,S3,S4,S5 sales
+  class D1,D2,D3 bd
+  class O1,O2,O3,O4,O4a,O5,O6,O7,O8 ops
+  class F1,F2 finance
+  class M1,M2 mgmt
+    </div>
+  </section>
+
+  <!-- 4. DECISION POINTS -->
+  <section id="s4">
+    <h2><span class="num">4</span> Key Decision Points</h2>
+    <p class="sub">The points where the process branches based on a business condition or human decision.</p>
+
+    <div class="decision-box">
+      <strong>Is a Site Visit required?</strong>
+      <p style="margin:6px 0 0;">Determined by Operations based on the nature of the project, before the Budget Builder begins.</p>
+    </div>
+    <div class="decision-box">
+      <strong>Does the Project Manager approve the Budget?</strong>
+      <p style="margin:6px 0 0;">The first approval gate after Operations prepares the budget; rejection sends it back for revision within Operations.</p>
+    </div>
+    <div class="decision-box">
+      <strong>Does Finance approve the Budget?</strong>
+      <p style="margin:6px 0 0;">Finance reviews only the Financial Summary (cost, margin, allowance).</p>
+    </div>
+    <div class="decision-box">
+      <strong>Does Management approve the Budget?</strong>
+      <p style="margin:6px 0 0;">The final, decisive approval; only after this does the Budget move to "Approved" status.</p>
+    </div>
+    <div class="decision-box">
+      <strong>Does the customer approve the Quotation?</strong>
+      <p style="margin:6px 0 0;">A revision request sends Sales back to update the quotation; approval moves directly to Sales Order creation.</p>
+    </div>
+  </section>
+
+  <!-- 5. APPROVAL FLOW -->
+  <section id="s5">
+    <h2><span class="num">5</span> Approval Flow</h2>
+    <p class="sub">A mandatory, sequential three-stage approval on the Budget, starting with the Project Manager and ending with Management.</p>
+    <div class="mermaid">
+flowchart LR
+  A["Budget ready for review"] --> B["Project Manager Approval"]
+  B -- Approved --> C["Finance Approval"]
+  B -- Rejected --> A2["Sent back for revision"] --> A
+  C -- Approved --> D["Management Approval"]
+  C -- Rejected --> A2
+  D -- Approved --> E["✅ Budget fully approved"]
+  D -- Rejected --> A2
+  E --> F["Create Quotation button enabled"]
+
+  classDef ops fill:#ea580c,color:#fff,stroke:none;
+  classDef finance fill:#16a34a,color:#fff,stroke:none;
+  classDef mgmt fill:#7c3aed,color:#fff,stroke:none;
+  classDef sales fill:#2563eb,color:#fff,stroke:none;
+  classDef reject fill:#dc2626,color:#fff,stroke:none;
+
+  class B ops
+  class C finance
+  class D,E mgmt
+  class F sales
+  class A2 reject
+    </div>
+    <div class="approval-box">
+      <strong>Note:</strong> A clear rejection reason should be required at every stage, so Operations can revise accurately without additional clarification cycles.
+    </div>
+  </section>
+
+  <!-- 6. STATUS TRANSITIONS -->
+  <section id="s6">
+    <h2><span class="num">6</span> Status Transitions</h2>
+    <p class="sub">The opportunity's lifecycle from creation through project closure.</p>
+    <div class="mermaid">
+stateDiagram-v2
+  [*] --> New
+  New --> BD_Coordination
+  BD_Coordination --> Operations_Stage
+  Operations_Stage --> Site_Visit_Decision
+  Site_Visit_Decision --> Site_Visit_In_Progress : Required
+  Site_Visit_Decision --> Budget_In_Progress : Not required
+  Site_Visit_In_Progress --> Budget_In_Progress
+  Budget_In_Progress --> Awaiting_PM_Approval
+  Awaiting_PM_Approval --> Awaiting_Finance_Approval : Approved
+  Awaiting_PM_Approval --> Budget_In_Progress : Rejected
+  Awaiting_Finance_Approval --> Awaiting_Management_Approval : Approved
+  Awaiting_Finance_Approval --> Budget_In_Progress : Rejected
+  Awaiting_Management_Approval --> Budget_Approved : Approved
+  Awaiting_Management_Approval --> Budget_In_Progress : Rejected
+  Budget_Approved --> Quotation_Created
+  Quotation_Created --> Awaiting_Customer_Approval
+  Awaiting_Customer_Approval --> Quotation_Created : Revision requested
+  Awaiting_Customer_Approval --> Sales_Order_Created : Approved
+  Sales_Order_Created --> Project_Created
+  Project_Created --> Tasks_Assigned
+  Tasks_Assigned --> In_Execution
+  In_Execution --> Project_Closed
+  Project_Closed --> [*]
+    </div>
+    <table>
+      <tr><th>Status</th><th>Description</th><th>Owner</th></tr>
+      <tr><td>New</td><td>Opportunity under Sales' own follow-up</td><td>Sales</td></tr>
+      <tr><td>BD Coordination</td><td>Business Development follows the opportunity before it reaches Operations</td><td>Business Development</td></tr>
+      <tr><td>Operations Stage</td><td>Operations has access and has begun working the opportunity</td><td>Operations</td></tr>
+      <tr><td>Site Visit Decision / In Progress</td><td>Optional stage immediately preceding the budget</td><td>Operations</td></tr>
+      <tr><td>Budget In Progress</td><td>Purchases, expenses, manpower, and the financial summary are populated</td><td>Operations</td></tr>
+      <tr><td>Awaiting PM / Finance / Management Approval</td><td>Three sequential, mandatory approval gates</td><td>By stage</td></tr>
+      <tr><td>Budget Approved</td><td>The status that unlocks quotation creation</td><td>—</td></tr>
+      <tr><td>Quotation Created / Awaiting Customer Approval</td><td>Final quotation issued with the commercial margin</td><td>Sales</td></tr>
+      <tr><td>Sales Order Created</td><td>Commercial confirmation after customer approval</td><td>Sales</td></tr>
+      <tr><td>Project Created / Tasks Assigned / In Execution / Closed</td><td>Full project execution lifecycle</td><td>Operations</td></tr>
+    </table>
+  </section>
+
+  <!-- 7. USER JOURNEYS -->
+  <section id="s7">
+    <h2><span class="num">7</span> Department User Journeys</h2>
+    <p class="sub">What each department does, step by step, from its own perspective.</p>
+    <div class="journey-grid">
+      <div class="dep-card">
+        <h3 style="color:var(--sales);">🔵 Sales</h3>
+        <ol>
+          <li>Creates the Opportunity with customer & project details</li>
+          <li>Tracks progress via the Opportunity Dashboard</li>
+          <li>Creates the Quotation once the budget is approved</li>
+          <li>Adds the commercial margin and sends the quotation to the customer</li>
+          <li>Follows up on customer approval and creates the Sales Order</li>
+        </ol>
+      </div>
+      <div class="dep-card">
+        <h3 style="color:var(--bd);">🔷 Business Development</h3>
+        <ol>
+          <li>Receives the Opportunity from Sales as soon as it's qualified</li>
+          <li>Coordinates its handover to Operations</li>
+          <li>Follows the budget through all three approval stages</li>
+          <li>Ensures the opportunity never stalls at any stage without follow-up</li>
+        </ol>
+      </div>
+      <div class="dep-card">
+        <h3 style="color:var(--ops);">🟠 Operations</h3>
+        <ol>
+          <li>Receives the assigned Opportunity</li>
+          <li>Determines and, if needed, performs the Site Visit</li>
+          <li>Prepares the full Budget and secures Project Manager approval internally</li>
+          <li>Creates the Project from a Template once the Sales Order exists</li>
+          <li>Assigns tasks and executes the project through to closure</li>
+        </ol>
+      </div>
+      <div class="dep-card">
+        <h3 style="color:var(--finance);">🟢 Finance</h3>
+        <ol>
+          <li>Receives the Budget after Project Manager approval</li>
+          <li>Reviews only the Financial Summary</li>
+          <li>Approves or rejects the budget, stating a clear reason</li>
+        </ol>
+      </div>
+      <div class="dep-card">
+        <h3 style="color:var(--mgmt);">🟣 Management</h3>
+        <ol>
+          <li>Receives the Budget after Finance approval</li>
+          <li>Conducts the final, comprehensive review</li>
+          <li>Gives final approval or rejection with remarks</li>
+          <li>Tracks project performance from high-level dashboards</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. VISUAL PROCESS MAP -->
+  <section id="s8">
+    <h2><span class="num">8</span> Visual Process Map for Presentations</h2>
+    <p class="sub">A condensed, single-screen version for use in meetings.</p>
+    <div class="mermaid">
+flowchart LR
+  subgraph Stage_1["1️⃣ Commercial Kickoff"]
+    A["CRM Opportunity"] --> B["BD Coordination"]
+  end
+  subgraph Stage_2["2️⃣ Field & Budget"]
+    C{"Site Visit?"} --> D["Budget Builder"]
+  end
+  subgraph Stage_3["3️⃣ Approvals"]
+    E["Project Manager"] --> F["Finance"] --> G["Management"]
+  end
+  subgraph Stage_4["4️⃣ Commercial Close"]
+    H["Quotation"] --> I["Customer Approval"] --> J["Sales Order"]
+  end
+  subgraph Stage_5["5️⃣ Execution"]
+    K["Project Created"] --> L["Tasks, Execution & Closure"]
+  end
+
+  B --> C
+  D --> E
+  G --> H
+  J --> K
+
+  classDef s1 fill:#2563eb,color:#fff,stroke:none;
+  classDef s2 fill:#ea580c,color:#fff,stroke:none;
+  classDef s3 fill:#7c3aed,color:#fff,stroke:none;
+  classDef s4 fill:#0891b2,color:#fff,stroke:none;
+  classDef s5 fill:#16a34a,color:#fff,stroke:none;
+  class A,B s1
+  class C,D s2
+  class E,F,G s3
+  class H,I,J s4
+  class K,L s5
+    </div>
+  </section>
+
+  <!-- 9. OPPORTUNITY DASHBOARD -->
+  <section id="s9">
+    <h2><span class="num">9</span> Opportunity Dashboard</h2>
+    <p class="sub">The CRM Opportunity remains the central reference throughout the project lifecycle, always displaying the following without needing to open any other module.</p>
+    <div class="dashboard-mock">
+      <h4>Automatic view within the Opportunity card</h4>
+      <div class="dash-grid">
+        <div class="dash-item"><div class="label">Current Stage</div><div class="value">Current Stage</div></div>
+        <div class="dash-item"><div class="label">Budget Status</div><div class="value">Budget Status</div></div>
+        <div class="dash-item"><div class="label">Approval Status</div><div class="value">Approval Status</div></div>
+        <div class="dash-item"><div class="label">Quotation Status</div><div class="value">Quotation Status</div></div>
+        <div class="dash-item"><div class="label">Sales Order Status</div><div class="value">Sales Order Status</div></div>
+        <div class="dash-item"><div class="label">Linked Project</div><div class="value">Linked Project</div></div>
+        <div class="dash-item"><div class="label">Project Progress</div><div class="value">Project Progress</div></div>
+        <div class="dash-item"><div class="label">Task Completion %</div><div class="value">Task Completion %</div></div>
+        <div class="dash-item"><div class="label">Open Tasks</div><div class="value">Open Tasks</div></div>
+        <div class="dash-item"><div class="label">Overdue Tasks</div><div class="value">Overdue Tasks</div></div>
+        <div class="dash-item"><div class="label">Completed Tasks</div><div class="value">Completed Tasks</div></div>
+      </div>
+    </div>
+    <div class="note-box" style="margin-top:18px;">
+      This dashboard lets Sales, Business Development, and Management track the full deal and project without needing direct access to the Operations or Finance modules.
+    </div>
+  </section>
+
+  <!-- 10. PERMISSIONS -->
+  <section id="s10">
+    <h2><span class="num">10</span> Permissions & Operations Access</h2>
+    <p class="sub">Operations only sees opportunities assigned to them, with clearly defined permissions per item.</p>
+    <table>
+      <tr><th>Item</th><th>Sales</th><th>Business Development</th><th>Operations</th><th>Finance</th><th>Management</th></tr>
+      <tr><td>Opportunity details</td><td>Full</td><td>Full</td><td>Assigned only</td><td>As needed</td><td>Full</td></tr>
+      <tr><td>Site Visit</td><td>View only</td><td>View only</td><td>Full (performs it)</td><td>—</td><td>View only</td></tr>
+      <tr><td>Budget Builder (operational detail)</td><td>—</td><td>View only</td><td>Full (prepares it)</td><td>View only</td><td>View only</td></tr>
+      <tr><td>Financial Summary</td><td>❌</td><td>❌</td><td>❌</td><td>✅ Full</td><td>✅ Full</td></tr>
+      <tr><td>Quotation summary</td><td>Full</td><td>View only</td><td>❌ Not available</td><td>View only</td><td>View only</td></tr>
+      <tr><td>Create Quotation / Sales Order</td><td>✅ Exclusive</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+      <tr><td>Linked Project after creation</td><td>View only</td><td>View only</td><td>Full (execution & closure)</td><td>—</td><td>Full</td></tr>
+    </table>
+    <div class="perm-box">
+      <strong>Operations access specifically:</strong> view the details of assigned opportunities, perform site visits, prepare the budget builder, and access the linked project after it is created. The quotation summary is not available to Operations.
+    </div>
+  </section>
+
+  <!-- 11. SUGGESTIONS -->
+  <section id="s11">
+    <h2><span class="num">11</span> Suggestions to Improve Operational Performance</h2>
+    <p class="sub">Business-level considerations for discussion with the departments.</p>
+
+    <div class="suggestion">
+      <div class="icon">1</div>
+      <div><h4>Automatic approval thresholds by budget value</h4>
+      <p>Small budgets may not require Management approval, relying instead on the Project Manager and Finance only.</p></div>
+    </div>
+    <div class="suggestion">
+      <div class="icon">2</div>
+      <div><h4>Set an SLA for each approval stage</h4>
+      <p>For example: 24 hours for the Project Manager, 48 hours for Finance, 48 hours for Management, with automatic alerts when a deadline is exceeded.</p></div>
+    </div>
+    <div class="suggestion">
+      <div class="icon">3</div>
+      <div><h4>Require a documented reason for every rejection</h4>
+      <p>This avoids repeated revision cycles without a clear understanding of what's actually needed.</p></div>
+    </div>
+    <div class="suggestion">
+      <div class="icon">4</div>
+      <div><h4>A single clear owner for the "Is a Site Visit required?" decision</h4>
+      <p>Designating the Operations Manager as the sole decision owner avoids inconsistent, ad-hoc judgment calls.</p></div>
+    </div>
+    <div class="suggestion">
+      <div class="icon">5</div>
+      <div><h4>Standardized project templates, reviewed periodically</h4>
+      <p>Periodic review of project templates ensures they reflect the actual types of projects being delivered.</p></div>
+    </div>
+    <div class="suggestion">
+      <div class="icon">6</div>
+      <div><h4>A cycle-time KPI for the full process</h4>
+      <p>Measuring the time from opportunity creation to project closure as a comprehensive key performance indicator.</p></div>
+    </div>
+    <div class="suggestion">
+      <div class="icon">7</div>
+      <div><h4>Track customer response time on the quotation</h4>
+      <p>Measuring the time between sending the quotation and receiving customer approval helps identify opportunities to speed up the commercial stage.</p></div>
+    </div>
+    <div class="suggestion">
+      <div class="icon">8</div>
+      <div><h4>One documented handover point between Business Development and Operations</h4>
+      <p>A clear handover checklist when the opportunity moves from Business Development to Operations ensures all required data is complete.</p></div>
+    </div>
+  </section>
+
+  <footer>
+    Business analysis document — ready for department manager review and design sign-off ahead of technical implementation
+  </footer>
+</div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad:true,
+    theme:"base",
+    themeVariables:{ fontFamily:"Segoe UI, Helvetica Neue, Arial, sans-serif", fontSize:"14px" },
+    flowchart:{ curve:"basis", htmlLabels:true },
+    securityLevel:"loose"
+  });
+</script>
+</body>
+</html>
