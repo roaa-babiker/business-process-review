@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>خرائط عمليات RFI / RFP / RFQ — بيك</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
+<style>
+  :root{
+    --client:#64748b; --bd:#0891b2; --hr:#db2777; --finance:#16a34a; --planning:#4f46e5;
+    --ops:#ea580c; --spec:#7c3aed; --proc:#b45309; --sales:#2563eb;
+    --bg:#f7f8fb; --ink:#1f2430; --muted:#5b6472; --card:#ffffff; --line:#e3e6ec;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Segoe UI","Tahoma","Noto Kufi Arabic","Arial",sans-serif;
+    line-height:1.9;
+  }
+  .wrap{max-width:1150px; margin:0 auto; padding:32px 24px 80px;}
+  header.cover{
+    background:linear-gradient(135deg,#1e293b,#334155);
+    color:#fff; padding:48px 40px; border-radius:18px; margin-bottom:28px;
+  }
+  header.cover h1{margin:0 0 10px; font-size:26px;}
+  header.cover p{margin:0; color:#cbd5e1; font-size:15px;}
+  .tags{display:flex; gap:10px; flex-wrap:wrap; margin-top:18px;}
+  .tag{background:rgba(255,255,255,.12); padding:6px 14px; border-radius:999px; font-size:13px;}
+
+  .note-box{
+    border-right:4px solid var(--ink); background:#fff; border:1px solid var(--line);
+    border-radius:12px; padding:18px 22px; margin-bottom:28px; font-size:14.5px;
+  }
+
+  nav.toc{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:22px 26px; margin-bottom:32px;}
+  nav.toc h2{margin-top:0; font-size:16px;}
+  nav.toc ol{margin:0; padding-inline-start:22px;}
+  nav.toc li{margin-bottom:6px; font-size:14.5px;}
+  nav.toc a{color:var(--ink); text-decoration:none;}
+  nav.toc a:hover{color:var(--bd); text-decoration:underline;}
+
+  section{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:26px 28px; margin-bottom:26px;}
+  section h2{font-size:19px; margin:0 0 4px; display:flex; align-items:center; gap:10px;}
+  section h2 .num{
+    background:var(--ink); color:#fff; width:28px; height:28px; border-radius:8px;
+    display:inline-flex; align-items:center; justify-content:center; font-size:13px; flex:none;
+  }
+  section .sub{color:var(--muted); font-size:13.5px; margin:0 0 16px;}
+  .mermaid{background:#fbfbfd; border:1px dashed var(--line); border-radius:10px; padding:16px; overflow:auto;}
+
+  .legend{display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 4px;}
+  .legend span{font-size:12px; padding:4px 11px; border-radius:999px; color:#fff;}
+
+  .gap-group{margin-bottom:22px;}
+  .gap-group h3{font-size:16px; margin:0 0 10px; padding-bottom:8px; border-bottom:2px solid var(--line);}
+  .gap{
+    display:flex; gap:12px; padding:12px 0; border-bottom:1px solid var(--line);
+  }
+  .gap:last-child{border-bottom:none;}
+  .gap .tag2{
+    flex:none; font-size:11px; font-weight:700; background:#fef2f2; color:#b91c1c;
+    border-radius:6px; padding:3px 8px; height:fit-content; white-space:nowrap;
+  }
+  .gap p{margin:0; font-size:14px;}
+  .gap strong{display:block; margin-bottom:3px; font-size:14.5px;}
+
+  footer{text-align:center; color:var(--muted); font-size:13px; margin-top:20px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="cover">
+    <h1>خرائط — RFI / RFP / RFQ</h1>
+    <div class="tags">
+      <span class="tag">RFI · RFP · RFQ</span>
+      <span class="tag">منظور تطوير النظام (Odoo)</span>
+    </div>
+  </header>
+
+  <div class="note-box">
+    <strong>ملاحظة منهجية:</strong> المخططات الثلاثة أدناه (الأقسام 1، 2، 3) هي تمثيل بصري مباشر لِما ورد نصًا في الملفات الثلاثة المرفوعة فقط — الأقسام، الأنشطة، نقاط التسليم، والتسلسل كما هي دون أي إضافة أو حذف أو إعادة ترتيب. القسم الرابع (الفجوات) منفصل تمامًا عن المخططات، ولا يُغيّر فيها أي شيء؛ هو فقط رصد لنقاط غير محسومة في النص الأصلي، من منظور شخص سيبني هذه العملية كنظام فعلي (Odoo)، بحيث تُناقش وتُحسم قبل مرحلة التصميم التقني.
+  </div>
+
+  <nav class="toc">
+    <h2>المحتويات</h2>
+    <ol>
+      <li><a href="#s1">خريطة عملية RFI (طلب معلومات)</a></li>
+      <li><a href="#s2">خريطة عملية RFP (طلب عرض فني وتجاري)</a></li>
+      <li><a href="#s3">خريطة عملية RFQ (طلب عرض سعر)</a></li>
+      <li><a href="#s4">الفجوات المرصودة من منظور تطوير النظام</a></li>
+    </ol>
+  </nav>
+
+  <div class="legend">
+    <span style="background:var(--client)">العميل</span>
+    <span style="background:var(--bd)">تطوير الأعمال</span>
+    <span style="background:var(--hr)">الموارد البشرية</span>
+    <span style="background:var(--finance)">المالية</span>
+    <span style="background:var(--planning)">التخطيط (Planning)</span>
+    <span style="background:var(--ops)">العمليات</span>
+    <span style="background:var(--spec)">أقسام متخصصة</span>
+    <span style="background:var(--proc)">المشتريات</span>
+    <span style="background:var(--sales)">المبيعات</span>
+  </div>
+
+  <!-- 1. RFI -->
+  <section id="s1">
+    <h2><span class="num">1</span> خريطة عملية RFI — Request for Information</h2>
+    <p class="sub">مصدر المحتوى: PEAK_RFI_Workflow_Full.docx — المراحل الخمس + مخطط "Department-to-Department Workflow" مدمجة في تسلسل واحد.</p>
+    <div class="mermaid">
+flowchart TD
+  CL1["العميل يُصدر RFI"] --> BD1
+
+  subgraph BD_1["BUSINESS DEVELOPMENT — Phase 1: Opportunity Receipt & Qualification"]
+    BD1["Receive RFI (Peak Info email or direct)"] --> BD2["Review the request; determine if within Peak's services"]
+    BD2 --> BD3["Confirm participation with client"]
+    BD3 --> BD4["Register the opportunity within the system"]
+  end
+
+  BD4 --> NDA_DEC{"Phase 2 — Who issues the NDA?"}
+  NDA_DEC -- "Peak issues" --> NDA_P["BD sends NDA → Client signs → Peak signs → Filed"]
+  NDA_DEC -- "Client issues" --> NDA_C["BD forwards NDA to HR"]
+
+  subgraph HR_1["HR"]
+    NDA_C --> HR1["Reviews agreement"]
+    HR1 --> HR2["Recommends amendments where required"]
+    HR2 --> HR3["Coordinates execution"]
+    HR3 --> HR4["Executed NDA returned to BD"]
+  end
+
+  NDA_P --> DOC1
+  HR4 --> DOC1
+
+  subgraph BD_2["BUSINESS DEVELOPMENT — Phase 3: Corporate Documentation Collection"]
+    DOC1["Review client's information requirements"]
+  end
+
+  subgraph HR_2["HR"]
+    DOC1 --> HRDOC["Provide: CR, Company Reg., Municipal & GEA Licences, ISO Certs, Insurance, ZATCA Cert., Saudization Cert., Company Profile, other compliance docs"]
+  end
+
+  subgraph FIN_1["FINANCE (where required)"]
+    DOC1 --> FINDOC["Provide: Audited & Annual Financial Statements, Financial Capability Docs, other financial docs"]
+  end
+
+  HRDOC --> VERIFY
+  FINDOC --> VERIFY
+
+  subgraph BD_3["BUSINESS DEVELOPMENT"]
+    VERIFY["Verify all required documentation received"] --> DIST["Phase 4 — Distribute RFI to Planning and Operations"]
+  end
+
+  subgraph PLAN_1["PLANNING"]
+    DIST --> PL1["Review the request"]
+    PL1 --> PL2["Identify specialist departments required"]
+  end
+
+  subgraph OPS_1["OPERATIONS"]
+    PL2 --> OP1["Assign Project Manager where operational coordination required"]
+  end
+
+  subgraph PLAN_2["PLANNING"]
+    OP1 --> COORD["Coordinate all technical contributors"]
+  end
+
+  subgraph SPEC_1["SPECIALIST DEPARTMENTS (where required): Crowd Safety / Training / Parkit / ImagineX / Hemmtk"]
+    COORD --> SP1["Review assigned sections"]
+    SP1 --> SP2["Develop & submit technical information"]
+  end
+
+  subgraph PLAN_3["PLANNING"]
+    SP2 --> CONS["Consolidate all departmental responses"]
+    CONS --> CLARQ{"Is clarification required?"}
+  end
+
+  CLARQ -- "Yes" --> CLARPREP["Prepare Questions & Clarification Register"]
+  CLARQ -- "No" --> FINALCOMP
+
+  subgraph BD_4["BUSINESS DEVELOPMENT"]
+    CLARPREP --> CLARSEND["Submit clarification requests to client"]
+    CLARSEND --> CLARDIST["Distribute client responses to relevant departments"]
+  end
+
+  subgraph PLAN_4["PLANNING"]
+    CLARDIST --> UPDATE["Update consolidated response based on client's clarifications"]
+  end
+
+  UPDATE --> FINALCOMP
+
+  subgraph BD_5["BUSINESS DEVELOPMENT — Phase 5: Information Response Submission"]
+    FINALCOMP["Compile: Consolidated Info Response + Corporate Docs + Financial Docs + Client Forms + Supporting Docs"]
+    FINALCOMP --> QA["Final QA Review + Compliance Check"]
+    QA --> SUBMIT["Submit response to client before deadline"]
+  end
+
+  SUBMIT --> CL2["العميل يستلم الرد على RFI"]
+
+  classDef client fill:#64748b,color:#fff,stroke:none;
+  classDef bd fill:#0891b2,color:#fff,stroke:none;
+  classDef hr fill:#db2777,color:#fff,stroke:none;
+  classDef finance fill:#16a34a,color:#fff,stroke:none;
+  classDef planning fill:#4f46e5,color:#fff,stroke:none;
+  classDef ops fill:#ea580c,color:#fff,stroke:none;
+  classDef spec fill:#7c3aed,color:#fff,stroke:none;
+
+  class CL1,CL2 client
+  class BD1,BD2,BD3,BD4,DOC1,VERIFY,DIST,CLARSEND,CLARDIST,FINALCOMP,QA,SUBMIT bd
+  class NDA_C,HR1,HR2,HR3,HR4,HRDOC hr
+  class FINDOC finance
+  class PL1,PL2,COORD,CONS,CLARQ,CLARPREP,UPDATE planning
+  class OP1 ops
+  class SP1,SP2 spec
+    </div>
+  </section>
+
+  <!-- 2. RFP -->
+  <section id="s2">
+    <h2><span class="num">2</span> خريطة عملية RFP — Request for Proposal</h2>
+    <p class="sub">مصدر المحتوى: PEAK_RFP_Workflow_Adjusted.docx — المراحل العشر + مخطط "Department-to-Department Workflow" مدمجة في تسلسل واحد.</p>
+    <div class="mermaid">
+flowchart TD
+  CL1["العميل يُصدر RFP"] --> BD1
+
+  subgraph BD_1["BUSINESS DEVELOPMENT — Phase 1: Opportunity Receipt & Qualification"]
+    BD1["Receive RFP (Peak Info email or direct)"] --> BD2["Review scope, capability requirements & commercial viability"]
+    BD2 --> BD3["Decide whether Peak should participate"]
+    BD3 --> BD4["Confirm participation with client"]
+    BD4 --> BD5["Register the opportunity within the system"]
+  end
+
+  BD5 --> NDA_DEC{"Phase 2 — Who issues the NDA?"}
+  NDA_DEC -- "Peak issues" --> NDA_P["BD sends NDA → Client signs → Peak signs → Filed"]
+  NDA_DEC -- "Client issues" --> NDA_C["BD forwards NDA to HR"]
+
+  subgraph HR_1["HR"]
+    NDA_C --> HR1["Reviews, recommends amendments, coordinates execution, returns executed NDA to BD"]
+  end
+
+  NDA_P --> DOC1
+  HR1 --> DOC1
+
+  subgraph BD_2["BUSINESS DEVELOPMENT — Phase 3: Corporate Documentation Collection"]
+    DOC1["Review the RFP requirements"]
+  end
+
+  subgraph HR_2["HR"]
+    DOC1 --> HRDOC["Provide: CR, Company Reg., Municipal & GEA Licences, ISO Certs, Insurance, ZATCA Cert., Saudization Cert., other compliance docs"]
+  end
+
+  subgraph FIN_1["FINANCE (where required)"]
+    DOC1 --> FINDOC["Provide: Audited & Annual Financial Statements, Financial Capability Docs, other financial docs"]
+  end
+
+  HRDOC --> VERIFY
+  FINDOC --> VERIFY
+
+  subgraph BD_3["BUSINESS DEVELOPMENT"]
+    VERIFY["Verify all documentation before submission"] --> DIST["Phase 4 — Distribute the RFP package"]
+  end
+
+  subgraph PLAN_1["PLANNING — Technical Kick-Off"]
+    DIST --> PL1["Review the scope"]
+    PL1 --> PL2["Identify specialist departments"]
+  end
+
+  subgraph OPS_1["OPERATIONS"]
+    PL2 --> OP1["Assign Project Manager"]
+  end
+
+  subgraph PLAN_2["PLANNING"]
+    OP1 --> COORD["Coordinate all technical contributors"]
+  end
+
+  subgraph PHASE5["PLANNING + OPERATIONS (Assigned PM) — Phase 5: Technical Review & Client Clarifications"]
+    COORD --> REV["Review scope, technical requirements, deliverables, operational constraints, client expectations, compliance requirements"]
+    REV --> CLARPREP["Planning prepares Questions & Clarification Register"]
+  end
+
+  subgraph BD_4["BUSINESS DEVELOPMENT"]
+    CLARPREP --> CLARSEND["Submit clarification requests to client"]
+    CLARSEND --> CLARDIST["Distribute responses to relevant departments"]
+  end
+
+  CLARDIST --> MEETDEC{"Phase 6 — Is a clarification meeting required?"}
+
+  subgraph BD_M["BUSINESS DEVELOPMENT"]
+    MEETDEC -- "Yes" --> MEET["Coordinate clarification meeting (Planning, Operations, Specialist Depts) — outcomes incorporated into proposal"]
+  end
+  MEETDEC -- "No" --> TPDEV
+  MEET --> TPDEV
+
+  subgraph SPEC_1["SPECIALIST DEPARTMENTS — Phase 7: Technical Proposal Development: Crowd Safety / Training / Parkit / ImagineX / Hemmtk"]
+    TPDEV["Submit technical recommendations"]
+  end
+
+  subgraph PLAN_3["PLANNING"]
+    TPDEV --> CONS["Consolidate the Technical Proposal"]
+  end
+
+  subgraph OPS_2["OPERATIONS (Assigned PM)"]
+    CONS --> OPREV["Final operational review before budgeting"]
+  end
+
+  subgraph OPS_3["OPERATIONS — Phase 8: Project Budget Development"]
+    OPREV --> BUD1["PM develops operational budget: manpower, equipment, vehicles, logistics, PPE, consumables, operational costs, subcontractors"]
+    BUD1 --> VENDEC{"External vendors / specialist services required?"}
+  end
+
+  VENDEC -- "Yes" --> PROC1
+  VENDEC -- "No" --> HRDEC
+
+  subgraph PROC_1["PROCUREMENT"]
+    PROC1["Obtain: equipment purchase/rental pricing, vendor quotations, Parkit / Hemmtk / ImagineX pricing, software licensing, SaaS, third-party pricing, delivery & mobilisation costs"]
+  end
+
+  PROC1 --> HRDEC{"Accommodation / travel / bookings required?"}
+  HRDEC -- "Yes" --> HR3
+  HRDEC -- "No" --> CONSBUD
+
+  subgraph HR_3["HR"]
+    HR3["Obtain: hotel, flight, vehicle hire quotations, accommodation pricing, other booking costs"]
+  end
+
+  HR3 --> CONSBUD
+
+  subgraph OPS_4["OPERATIONS"]
+    CONSBUD["Consolidate all operational, vendor, travel & accommodation costs into final Project Budget"]
+    CONSBUD --> SENDBD["Submit Project Budget to Business Development"]
+  end
+
+  subgraph SALES_1["SALES — Phase 9: Commercial Pricing"]
+    SENDBD --> COMPRICE["BD forwards approved budget to Sales → Sales prepares commercial quotation"]
+  end
+
+  subgraph FIN_2["FINANCE"]
+    COMPRICE --> FINREV["Review profitability, margins & commercial compliance"]
+    FINREV --> FINAPP["Approve quotation"]
+  end
+
+  subgraph BD_5["BUSINESS DEVELOPMENT — Phase 10: Final Proposal Compilation & Submission"]
+    FINAPP --> COMPILE["Compile: Technical Proposal + Commercial Proposal + Corporate Docs + Financial Docs + Client Forms + Supporting Docs"]
+    COMPILE --> QA["Compliance check"]
+    QA --> SUBMIT["Submit proposal to client"]
+  end
+
+  SUBMIT --> CL2["العميل يستلم عرض RFP"]
+
+  classDef client fill:#64748b,color:#fff,stroke:none;
+  classDef bd fill:#0891b2,color:#fff,stroke:none;
+  classDef hr fill:#db2777,color:#fff,stroke:none;
+  classDef finance fill:#16a34a,color:#fff,stroke:none;
+  classDef planning fill:#4f46e5,color:#fff,stroke:none;
+  classDef ops fill:#ea580c,color:#fff,stroke:none;
+  classDef spec fill:#7c3aed,color:#fff,stroke:none;
+  classDef proc fill:#b45309,color:#fff,stroke:none;
+  classDef sales fill:#2563eb,color:#fff,stroke:none;
+
+  class CL1,CL2 client
+  class BD1,BD2,BD3,BD4,BD5,DOC1,VERIFY,DIST,CLARSEND,CLARDIST,MEET,SENDBD,COMPILE,QA,SUBMIT bd
+  class NDA_C,HR1,HRDOC,HR3 hr
+  class FINDOC,FINREV,FINAPP finance
+  class PL1,PL2,COORD,REV,CLARPREP,CONS planning
+  class OP1,OPREV,BUD1,VENDEC,HRDEC,CONSBUD ops
+  class TPDEV spec
+  class PROC1 proc
+  class COMPRICE sales
+    </div>
+  </section>
+
+  <!-- 3. RFQ -->
+  <section id="s3">
+    <h2><span class="num">3</span> خريطة عملية RFQ — Request for Quotation</h2>
+    <p class="sub">مصدر المحتوى: PEAK_RFQ_Workflow_Adjusted.docx — المراحل الست + مخطط "Department-to-Department Workflow" مدمجة في تسلسل واحد.</p>
+    <div class="mermaid">
+flowchart TD
+  CL1["العميل يُصدر RFQ"] --> BD1
+
+  subgraph BD_1["BUSINESS DEVELOPMENT — Phase 1: Opportunity Receipt & Qualification"]
+    BD1["Receive RFQ (Peak Info email or direct)"] --> BD2["Review scope, capability requirements & commercial viability"]
+    BD2 --> BD3["Decide whether Peak will participate"]
+    BD3 --> BD4["Confirm participation with client"]
+    BD4 --> BD5["Register the opportunity within the system"]
+  end
+
+  BD5 --> NDA_DEC{"Phase 2 — Who issues the NDA?"}
+  NDA_DEC -- "Peak issues" --> NDA_P["BD sends NDA → Client signs → Peak signs → Filed"]
+  NDA_DEC -- "Client issues" --> NDA_C["BD forwards NDA to HR"]
+
+  subgraph HR_1["HR"]
+    NDA_C --> HR1["Reviews, recommends amendments, coordinates execution, returns executed NDA"]
+  end
+
+  NDA_P --> DOC1
+  HR1 --> DOC1
+
+  subgraph BD_2["BUSINESS DEVELOPMENT — Phase 3: Corporate Documentation Collection"]
+    DOC1["Review the RFQ submission requirements"]
+  end
+
+  subgraph HR_2["HR"]
+    DOC1 --> HRDOC["Provide: CR, Company Reg., Municipal & GEA Licences, ISO Certs, Insurance, ZATCA Cert., Saudization Cert., Company Profile"]
+  end
+
+  subgraph FIN_1["FINANCE (where required)"]
+    DOC1 --> FINDOC["Provide: Audited & Annual Financial Statements, Financial Capability Docs"]
+  end
+
+  HRDOC --> VERIFY
+  FINDOC --> VERIFY
+
+  subgraph BD_3["BUSINESS DEVELOPMENT"]
+    VERIFY["Verify all documentation before submission"] --> FWD["Forward RFQ to Operations"]
+  end
+
+  subgraph OPS_1["OPERATIONS — Phase 4: Project Budget / BOQ / Rate Card Development"]
+    FWD --> OP1["Review RFQ & prepare clarification questions where required"]
+  end
+
+  subgraph BD_4["BUSINESS DEVELOPMENT"]
+    OP1 --> CLARSEND["Submit clarification requests to client & distribute responses back to Operations"]
+  end
+
+  subgraph OPS_2["OPERATIONS"]
+    CLARSEND --> DEV["Develop BOQ, rate card, manpower & equipment requirements, operational assumptions"]
+    DEV --> VENDEC{"External vendors / specialist services required?"}
+  end
+
+  VENDEC -- "Yes" --> PROC1
+  VENDEC -- "No" --> HRDEC
+
+  subgraph PROC_1["PROCUREMENT"]
+    PROC1["Obtain: equipment purchase/rental pricing, vendor quotations, Parkit / Hemmtk / ImagineX pricing, software licensing, SaaS, third-party pricing, delivery & mobilisation costs"]
+  end
+
+  PROC1 --> HRDEC{"Accommodation / travel / bookings required?"}
+  HRDEC -- "Yes" --> HR3
+  HRDEC -- "No" --> CONSBUD
+
+  subgraph HR_3["HR"]
+    HR3["Obtain: hotel, flight, vehicle hire quotations, staff travel (Perdiems), accommodation pricing, other booking costs"]
+  end
+
+  HR3 --> CONSBUD
+
+  subgraph OPS_3["OPERATIONS"]
+    CONSBUD["Consolidate all pricing into final BOQ / rate card / operational pricing"]
+    CONSBUD --> SENDBD["Submit to Business Development"]
+  end
+
+  subgraph SALES_1["SALES — Phase 5: Commercial Pricing"]
+    SENDBD --> COMPRICE["BD forwards operational pricing to Sales → Sales prepares commercial quotation"]
+  end
+
+  subgraph FIN_2["FINANCE"]
+    COMPRICE --> FINREV["Review profitability, margins & commercial compliance"]
+    FINREV --> FINAPP["Approve quotation, return to BD"]
+  end
+
+  subgraph BD_5["BUSINESS DEVELOPMENT — Phase 6: Commercial Proposal Submission"]
+    FINAPP --> COMPILE["Compile: Commercial Proposal + BOQ + Rate Card + Corporate Docs + Financial Docs + Client Forms + Supporting Docs"]
+    COMPILE --> QA["Final QA Review + Compliance Check"]
+    QA --> SUBMIT["Submit to client before deadline"]
+  end
+
+  SUBMIT --> CL2["العميل يستلم عرض RFQ"]
+
+  classDef client fill:#64748b,color:#fff,stroke:none;
+  classDef bd fill:#0891b2,color:#fff,stroke:none;
+  classDef hr fill:#db2777,color:#fff,stroke:none;
+  classDef finance fill:#16a34a,color:#fff,stroke:none;
+  classDef ops fill:#ea580c,color:#fff,stroke:none;
+  classDef proc fill:#b45309,color:#fff,stroke:none;
+  classDef sales fill:#2563eb,color:#fff,stroke:none;
+
+  class CL1,CL2 client
+  class BD1,BD2,BD3,BD4,BD5,DOC1,VERIFY,FWD,CLARSEND,SENDBD,COMPILE,QA,SUBMIT bd
+  class NDA_C,HR1,HRDOC,HR3 hr
+  class FINDOC,FINREV,FINAPP finance
+  class OP1,DEV,VENDEC,HRDEC,CONSBUD ops
+  class PROC1 proc
+  class COMPRICE sales
+    </div>
+  </section>
+
+  <!-- 4. GAPS -->
+  <section id="s4">
+    <h2><span class="num">4</span> الفجوات المرصودة من منظور تطوير النظام</h2>
+    <p class="sub">هذه ملاحظات رصد فقط — لا تتضمن أي اقتراح لتغيير منطق العملية الموثّق أعلاه. الهدف حصرها ومناقشتها/حسمها مع الإدارات قبل بدء التصميم التقني في أودو.</p>
+
+    <div class="gap-group">
+      <h3>فجوات مشتركة بين الملفات الثلاثة (RFI / RFP / RFQ)</h3>
+
+      <div class="gap">
+        <span class="tag2">مسار غير موثّق</span>
+        <div><strong>حالة "عدم المشاركة" (Decline) غير معرَّفة</strong>
+        <p>الملفات الثلاثة تذكر قرار "هل نشارك؟" ثم توثّق فقط مسار "نعم". لا يوجد أي وصف لما يحدث إذا كان القرار "لا" — لا حالة إغلاق للفرصة، لا إشعار للعميل، ولا حالة نظام مقابلة. هذا مطلوب حسمه لأن أي نظام سيحتاج مسارًا لكل الاحتمالات وليس فقط الإيجابي.</p></div>
+      </div>
+
+      <div class="gap">
+        <span class="tag2">معيار غير معرَّف</span>
+        <div><strong>لا يوجد معيار واضح لقرار "هل يقع الطلب ضمن خدمات بيك؟" أو "الجدوى التجارية"</strong>
+        <p>القرار متروك لتقدير تطوير الأعمال دون معايير موثّقة (مثل حد أدنى لحجم الفرصة، أو نوع الخدمة). من منظور النظام، هذا يعني أن الحقل سيكون نصيًا/تقديريًا وليس قابلًا للأتمتة أو التقارير الكمية إلا إذا حُدد معيار لاحقًا.</p></div>
+      </div>
+
+      <div class="gap">
+        <span class="tag2">SLA غير موجود</span>
+        <div><strong>لا توجد أي مهلة زمنية (SLA) لأي مرحلة في الملفات الثلاثة</strong>
+        <p>لا يوجد ذكر لمدة استجابة متوقعة لأي نشاط (لا لتوفير المستندات من HR/المالية، ولا لمراجعة التخطيط، ولا لاعتماد المالية للعرض). بينما "موعد التسليم النهائي للعميل" مذكور كمُخرَج يُسلَّم، لا يوجد أي آلية متابعة داخلية لضمان عدم تجاوزه.</p></div>
+      </div>
+
+      <div class="gap">
+        <span class="tag2">تعريف غير مكتمل</span>
+        <div><strong>الأقسام/الكيانات "Parkit"، "ImagineX"، "Hemmtk" غير معرَّفة في السياق</strong>
+        <p><strong>سؤال للحسم:</strong> هل التعامل معها سيكون كموردين (تسعير عبر المشتريات فقط)، أم بيتم إرسال مهام (Tasks) لها كأقسام داخلية ضمن سير العمل؟</p></div>
+      </div>
+
+      <div class="gap">
+        <span class="tag2">غير موثّق</span>
+        <div><strong>لا يوجد مسار توثيق لفشل التحقق من اكتمال المستندات</strong>
+        <p>"تطوير الأعمال يتحقق من اكتمال جميع المستندات المطلوبة قبل التقديم" — لكن لا يوجد وصف لما يحدث إذا كانت ناقصة (تصعيد؟ تأخير الإرسال؟ تنبيه لصاحب القسم المتأخر؟).</p></div>
+      </div>
+
+      <div class="gap">
+        <span class="tag2">غير موثّق</span>
+        <div><strong>لا يوجد حد لعدد جولات الاستيضاح (Clarification) مع العميل</strong>
+        <p>في الملفات الثلاثة، دورة "استيضاح ← رد العميل ← تحديث" موثقة كخطوة واحدة، لكن لا يوجد ما يوضح إن كانت هذه الدورة يمكن أن تتكرر عدة مرات، وما الحد الأقصى، وهل هناك نقطة يُقرَّر فيها التوقف عن الاستيضاح والمتابعة بالمتاح.</p></div>
+      </div>
+
+      <div class="gap">
+        <span class="tag2">علاقة غير موضحة</span>
+        <div><strong>لا يوجد ربط موثّق بين هذه العمليات الثلاث وعملية "الفرصة ← المشروع" الموثقة سابقًا</strong>
+        <p>الملفات الثلاثة تنتهي عند "تقديم الرد/العرض للعميل"، بينما العملية الأخرى التي وثّقناها سابقًا (من اعتماد الميزانية إلى إغلاق المشروع) تبدأ من نقطة موافقة العميل على عرض السعر تقريبًا. لا يوجد نص يوضح نقطة الالتقاء الدقيقة بينهما: هل موافقة العميل هنا هي نفسها "Customer Approval" في العملية الأخرى؟ وهل "تسجيل الفرصة في النظام" في المرحلة 1 هنا هو نفس سجل الفرصة (Opportunity) هناك؟</p></div>
+      </div>
+
+      <div class="gap">
+        <span class="tag2">غير موثّق</span>
+        <div><strong>لا يوجد ذكر لمستودع/نظام حفظ للمستندات (NDA، المستندات المؤسسية، العروض الفنية)</strong>
+        <p>يُذكر "الملف/التسجيل" كنشاط (مثل "Executed NDA is filed") دون تحديد أين وكيف — مهم لتصميم إدارة المستندات (DMS) داخل أودو أو خارجه.</p></div>
+      </div>
+
+      <div class="gap">
+        <span class="tag2">غير موضح</span>
+        <div><strong>آلية استقبال الطلب ("Peak Info email") غير موضحة تقنيًا</strong>
+        <p><strong>سؤال للحسم:</strong> هل سيتم ربط البريد تقنيًا بالنظام (Lead Capture تلقائي)، أم سيبقى الإدخال يدويًا من قبل تطوير الأعمال؟</p></div>
+      </div>
+
+      <div class="gap">
+        <span class="tag2">سؤال للاستيضاح</span>
+        <div><strong>هل يمكن أن يتغيّر تصنيف الطلب أثناء العملية؟ (مثال: RFI يتطور إلى RFP)</strong>
+        <p>الملفات الثلاثة معزولة تمامًا عن بعضها. السؤال المطروح للنقاش فقط: هل هذا السيناريو ممكن الحدوث فعليًا في واقع العمل أم لا؟</p></div>
+      </div>
+    </div>
+
+    <div class="gap-group">
+      <h3>فجوات خاصة بـ RFI</h3>
+      <div class="gap">
+        <span class="tag2">غير موثّق</span>
+        <div><strong>لا توجد مراجعة/اعتماد داخلي قبل التقديم النهائي غير "مراجعة الجودة" من تطوير الأعمال نفسه</strong>
+        <p>لا يوجد ذكر لمراجعة من التخطيط أو الإدارة على الرد المُجمَّع قبل إرساله للعميل، رغم مشاركة عدة أقسام متخصصة في إعداده.</p></div>
+      </div>
+    </div>
+
+    <div class="gap-group">
+      <h3>فجوات خاصة بـ RFP</h3>
+      <div class="gap">
+        <span class="tag2">غير محسوم</span>
+        <div><strong>لا يوجد اعتماد من الإدارة العليا (Management) في أي نقطة</strong>
+        <p>الاعتماد الوحيد المذكور للعرض التجاري هو اعتماد المالية فقط (مراجعة الربحية والهامش). لا يوجد ذكر لأي اعتماد إداري أعلى قبل تقديم العرض للعميل، رغم أن هذا موجود كطبقة ثالثة في عملية الميزانية اللاحقة (بعد الفوز بالمشروع) التي وثّقناها سابقًا.</p></div>
+      </div>
+      <div class="gap">
+        <span class="tag2">تسلسل غير واضح تمامًا</span>
+        <div><strong>العلاقة بين "التخطيط" و"العمليات" في المرحلة 4 (Technical Kick-Off) غير محددة بدقة كافية</strong>
+        <p>النص يذكر أن تطوير الأعمال يوزّع الحزمة على التخطيط، وأن العمليات تُعيّن مدير مشروع — لكن لا يتضح إن كان هذا التعيين يحدث بالتوازي مع مراجعة التخطيط أم بعد طلب صريح من التخطيط.</p></div>
+      </div>
+    </div>
+
+    <div class="gap-group">
+      <h3>فجوات خاصة بـ RFQ</h3>
+      <div class="gap">
+        <span class="tag2">غير محسوم</span>
+        <div><strong>لا يوجد اعتماد من الإدارة العليا (Management) هنا أيضًا</strong>
+        <p>نفس ملاحظة RFP: الاعتماد الوحيد على العرض التجاري هو من المالية فقط.</p></div>
+      </div>
+      <div class="gap">
+        <span class="tag2">تشابه غير موضَّح</span>
+        <div><strong>تطابق كبير بين مراحل RFQ 1-3 ومراحل RFP/RFI 1-3</strong>
+        <p>المراحل الثلاث الأولى (الاستلام والتأهيل، إدارة NDA، تجميع المستندات المؤسسية) شبه متطابقة نصًا بين الملفات الثلاثة. لا يوجد توضيح إن كان القصد أنها فعليًا نفس المسار التقني في النظام (نفس الحقول/الأنواع) بغض النظر عن نوع الطلب، أم مسارات منفصلة تمامًا لكل نوع.</p></div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad:true,
+    theme:"base",
+    themeVariables:{ fontFamily:"Segoe UI, Tahoma, Arial, sans-serif", fontSize:"13px" },
+    flowchart:{ curve:"basis", htmlLabels:true },
+    securityLevel:"loose"
+  });
+</script>
+</body>
+</html>
