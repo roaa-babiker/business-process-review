@@ -60,8 +60,12 @@
     flex:none; font-size:11px; font-weight:700; background:#fef2f2; color:#b91c1c;
     border-radius:6px; padding:3px 8px; height:fit-content; white-space:nowrap;
   }
+  .gap .tag2.resolved{background:#f0fdf4; color:#15803d;}
+  .gap .tag2.decided{background:#eff6ff; color:#1d4ed8;}
   .gap p{margin:0; font-size:14px;}
   .gap strong{display:block; margin-bottom:3px; font-size:14.5px;}
+  .gap .decision-note{margin-top:8px; font-size:13px; background:#f0fdf4; border-left:3px solid #16a34a; padding:6px 10px; border-radius:4px; color:#166534;}
+  .gap .pending-note{margin-top:8px; font-size:13px; background:#eff6ff; border-left:3px solid #2563eb; padding:6px 10px; border-radius:4px; color:#1e40af;}
 
   footer{text-align:center; color:var(--muted); font-size:13px; margin-top:20px;}
 </style>
@@ -485,7 +489,7 @@ flowchart TD
   <!-- 4. GAPS -->
   <section id="s4">
     <h2><span class="num">4</span> Gaps Observed from a System-Builder Perspective</h2>
-    <p class="sub">These are observations only — none of them suggest changing the process logic documented above. The goal is to list and discuss/resolve them with the departments before technical design begins in Odoo.</p>
+    <p class="sub">Original observations from a system-builder perspective, with notes from the discussion with Bandar added beneath each item.</p>
 
     <div class="gap-group">
       <h3>Gaps common to all three files (RFI / RFP / RFQ)</h3>
@@ -493,71 +497,77 @@ flowchart TD
       <div class="gap">
         <span class="tag2">Undocumented path</span>
         <div><strong>The "Decline to participate" case is not defined</strong>
-        <p>All three files mention a "should we participate?" decision, but only document the "Yes" path. There is no description of what happens if the decision is "No" — no closure status for the opportunity, no client notification, no corresponding system state. This needs to be resolved, since any system needs a path for every outcome, not just the positive one.</p></div>
+        <p>All three files mention a "should we participate?" decision, but only document the "Yes" path. There is no description of what happens if the decision is "No" — no closure status for the opportunity, no client notification, no corresponding system state. This needs to be resolved, since any system needs a path for every outcome, not just the positive one.</p>
+        <div class="decision-note">💬 <strong>Bandar:</strong> A <em>Leads</em> stage will be activated <em>before</em> the Opportunity stage. Lead activation is the pre-opportunity phase, and opportunity evaluation (proceed or not) is based on it. Evaluation criteria (opportunity size, service type, etc.) will be defined later based on client-count and sales/revenue targets.</div></div>
       </div>
 
       <div class="gap">
         <span class="tag2">Undefined criteria</span>
         <div><strong>No clear criteria for "does the request fall within Peak's services?" or "commercial viability"</strong>
-        <p>This decision is left to Business Development's judgment with no documented criteria (e.g., a minimum opportunity size, or service type). From a system perspective, this means the field will remain free-text/judgment-based and not automatable or quantitatively reportable unless a criterion is defined later.</p></div>
+        <p>This decision is left to Business Development's judgment with no documented criteria (e.g., a minimum opportunity size, or service type). From a system perspective, this means the field will remain free-text/judgment-based and not automatable or quantitatively reportable unless a criterion is defined later.</p>
+        <div class="decision-note">💬 <strong>Bandar:</strong> Criteria will be defined later, tied to client-count targets and sales/revenue targets. This is agreed.</div></div>
       </div>
 
       <div class="gap">
         <span class="tag2">No SLA</span>
         <div><strong>No turnaround time (SLA) exists for any phase across all three files</strong>
-        <p>There is no mention of an expected response time for any activity — not for HR/Finance document provision, not for Planning's review, not for Finance's approval of the quotation. While the "client's final submission deadline" is mentioned as a deliverable, there is no internal tracking mechanism to ensure it isn't missed.</p></div>
+        <p>There is no mention of an expected response time for any activity — not for HR/Finance document provision, not for Planning's review, not for Finance's approval of the quotation. While the "client's final submission deadline" is mentioned as a deliverable, there is no internal tracking mechanism to ensure it isn't missed.</p>
+        <div class="decision-note">💬 <strong>Bandar:</strong> SLAs are important and will be defined by Bandar at a later stage.</div></div>
       </div>
 
       <div class="gap">
         <span class="tag2">Incomplete definition</span>
         <div><strong>The entities "Parkit", "ImagineX", and "Hemmtk" are not defined in context</strong>
-        <p><strong>Question to resolve:</strong> Will they be treated as vendors (pricing via Procurement only), or will tasks be assigned to them as internal departments within the workflow?</p></div>
+        <p><strong>Question to resolve:</strong> Will they be treated as vendors (pricing via Procurement only), or will tasks be assigned to them as internal departments within the workflow?</p>
+        <div class="decision-note">💬 <strong>Bandar:</strong> They will be treated as <strong>vendors and service providers only</strong>. No internal workflow tasks are assigned to them.</div></div>
       </div>
 
       <div class="gap">
         <span class="tag2">Undocumented</span>
         <div><strong>No documented path for a failed documentation completeness check</strong>
-        <p>"Business Development verifies all required documentation has been received before submission" — but there is no description of what happens if it's incomplete (escalation? delaying submission? alerting the department that is behind?).</p></div>
+        <p>"Business Development verifies all required documentation has been received before submission" — but there is no description of what happens if it's incomplete (escalation? delaying submission? alerting the department that is behind?).</p>
+        <div class="decision-note">💬 <strong>Bandar:</strong> It is the Business Developer's responsibility to write directly to the relevant people to follow up on missing documents.</div></div>
       </div>
 
       <div class="gap">
         <span class="tag2">Undocumented</span>
         <div><strong>No limit on the number of clarification rounds with the client</strong>
-        <p>Across all three files, the "clarification request → client response → update" cycle is documented as a single step, but nothing indicates whether this cycle can repeat multiple times, what the maximum is, or at what point the team should stop seeking clarification and proceed with what's available.</p></div>
+        <p>Across all three files, the "clarification request → client response → update" cycle is documented as a single step, but nothing indicates whether this cycle can repeat multiple times, what the maximum is, or at what point the team should stop seeking clarification and proceed with what's available.</p>
+        <div class="decision-note">💬 <strong>Bandar:</strong> The Business Developer writes to the relevant parties for clarification (first point). This phase is <strong>open-ended</strong> — no maximum number of rounds is set at this stage (second point).</div></div>
       </div>
 
       <div class="gap">
         <span class="tag2">Unclear relationship</span>
         <div><strong>No documented link between these three processes and the "Opportunity → Project" process documented earlier</strong>
-        <p>All three files end at "submit the response/proposal to the client," while the other process we documented earlier (from budget approval through project closure) begins roughly at the point of customer approval of the quotation. There is no text clarifying the exact meeting point between them: is "Customer Approval" here the same as "Customer Approval" there? Is "register the opportunity in the system" in Phase 1 here the same Opportunity record referenced there?</p></div>
+        <p>All three files end at "submit the response/proposal to the client," while the other process we documented earlier (from budget approval through project closure) begins roughly at the point of customer approval of the quotation. There is no text clarifying the exact meeting point between them: is "Customer Approval" here the same as "Customer Approval" there? Is "register the opportunity in the system" in Phase 1 here the same Opportunity record referenced there?</p>
+        <div class="decision-note">💬 <strong>Bandar:</strong> Confirmation and linking of the project execution phase is needed to complete the end-to-end workflow. This is a pending item.</div></div>
       </div>
 
       <div class="gap">
         <span class="tag2">Undocumented</span>
         <div><strong>No mention of a document repository/storage system (NDA, corporate documents, technical proposals)</strong>
-        <p>"Filing" is mentioned as an activity (e.g., "Executed NDA is filed") without specifying where or how — important for designing document management (DMS) within or outside Odoo.</p></div>
+        <p>"Filing" is mentioned as an activity (e.g., "Executed NDA is filed") without specifying where or how — important for designing document management (DMS) within or outside Odoo.</p>
+        <div class="decision-note">💬 <strong>Bandar:</strong> Documents can be stored in a client file tagged with the project name, or linked directly to the project record so all projects are visible under the client.</div></div>
       </div>
 
       <div class="gap">
         <span class="tag2">Not specified</span>
         <div><strong>The intake mechanism ("Peak Info email") is not specified technically</strong>
-        <p><strong>Question to resolve:</strong> Will the mailbox be technically integrated with the system (automatic Lead Capture), or will entry remain manual by Business Development?</p></div>
+        <p><strong>Question to resolve:</strong> Will the mailbox be technically integrated with the system (automatic Lead Capture), or will entry remain manual by Business Development?</p>
+        <div class="decision-note">💬 <strong>Bandar:</strong> <strong>Manual entry only.</strong> No technical integration between the email and the system.</div></div>
       </div>
 
       <div class="gap">
         <span class="tag2">Question to clarify</span>
         <div><strong>Can a request's classification change mid-process? (e.g., an RFI evolving into an RFP)</strong>
-        <p>The three files are treated as entirely separate. The only question raised here for discussion: is this scenario actually possible in practice, or not?</p></div>
+        <p>The three files are treated as entirely separate. The only question raised here for discussion: is this scenario actually possible in practice, or not?</p>
+        <div class="decision-note">💬 <strong>Bandar:</strong> These two questions (reclassification and overlap between phases 1-3) are treated together — see "Significant overlap" item below.</div></div>
       </div>
     </div>
 
     <div class="gap-group">
       <h3>Gaps specific to RFI</h3>
-      <div class="gap">
-        <span class="tag2">Undocumented</span>
-        <div><strong>No internal review/approval before final submission other than Business Development's own "quality review"</strong>
-        <p>There is no mention of Planning or Management reviewing the consolidated response before it is sent to the client, despite several specialist departments contributing to it.</p></div>
-      </div>
+      <p style="font-size:14px;color:var(--muted);font-style:italic;">No items — the previously noted item about internal review was removed per Bandar's direction.</p>
     </div>
 
     <div class="gap-group">
@@ -565,7 +575,8 @@ flowchart TD
       <div class="gap">
         <span class="tag2">Unresolved</span>
         <div><strong>No senior Management approval at any point</strong>
-        <p>The only approval mentioned for the commercial proposal is Finance's review of profitability and margin. There is no mention of any higher management sign-off before the proposal is submitted to the client, despite this existing as a third approval layer in the later budget process (after project award) documented previously.</p></div>
+        <p>The only approval mentioned for the commercial proposal is Finance's review of profitability and margin. There is no mention of any higher management sign-off before the proposal is submitted to the client, despite this existing as a third approval layer in the later budget process (after project award) documented previously.</p>
+        <div class="decision-note">💬 <strong>Bandar / Ibrahim:</strong> <strong>Management approval will be added after Finance approval</strong> as an explicit step before the proposal is submitted to the client.</div></div>
       </div>
       <div class="gap">
         <span class="tag2">Sequence not fully clear</span>
@@ -579,12 +590,14 @@ flowchart TD
       <div class="gap">
         <span class="tag2">Unresolved</span>
         <div><strong>No senior Management approval here either</strong>
-        <p>Same observation as RFP: the only approval on the commercial proposal is from Finance.</p></div>
+        <p>Same observation as RFP: the only approval on the commercial proposal is from Finance.</p>
+        <div class="decision-note">💬 <strong>Bandar / Ibrahim:</strong> <strong>Management approval will be added after Finance approval</strong> as an explicit step before the proposal is submitted to the client.</div></div>
       </div>
       <div class="gap">
         <span class="tag2">Overlap not clarified</span>
         <div><strong>Significant overlap between RFQ Phases 1-3 and RFP/RFI Phases 1-3</strong>
-        <p>The first three phases (receipt & qualification, NDA management, corporate documentation collection) are nearly identical in wording across all three files. It's not clarified whether this means they are, in practice, the exact same technical path in the system (same fields/record types) regardless of request type, or entirely separate paths for each type.</p></div>
+        <p>The first three phases (receipt & qualification, NDA management, corporate documentation collection) are nearly identical in wording across all three files. It's not clarified whether this means they are, in practice, the exact same technical path in the system (same fields/record types) regardless of request type, or entirely separate paths for each type.</p>
+        <div class="decision-note">💬 <strong>Bandar:</strong> These two questions (this item and the RFI→RFP reclassification question above) are treated together — the shared phases are the same operational steps regardless of request type.</div></div>
       </div>
     </div>
   </section>
