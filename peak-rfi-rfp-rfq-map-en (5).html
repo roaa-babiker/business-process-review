@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<title>RFI / RFP / RFQ Workflow Maps — Peak</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
+<style>
+  :root{
+    --client:#64748b; --bd:#0891b2; --hr:#db2777; --finance:#16a34a; --planning:#4f46e5;
+    --ops:#ea580c; --spec:#7c3aed; --proc:#b45309; --sales:#2563eb; --mgmt:#b91c1c;
+    --bg:#f7f8fb; --ink:#1f2430; --muted:#5b6472; --card:#ffffff; --line:#e3e6ec;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Segoe UI","Helvetica Neue","Arial",sans-serif;
+    line-height:1.7;
+  }
+  .wrap{max-width:1150px; margin:0 auto; padding:32px 24px 80px;}
+  header.cover{
+    background:linear-gradient(135deg,#1e293b,#334155);
+    color:#fff; padding:48px 40px; border-radius:18px; margin-bottom:28px;
+  }
+  header.cover h1{margin:0 0 10px; font-size:26px;}
+  header.cover p{margin:0; color:#cbd5e1; font-size:15px;}
+  .tags{display:flex; gap:10px; flex-wrap:wrap; margin-top:18px;}
+  .tag{background:rgba(255,255,255,.12); padding:6px 14px; border-radius:999px; font-size:13px;}
+
+  .note-box{
+    border-left:4px solid var(--ink); background:#fff; border:1px solid var(--line);
+    border-radius:12px; padding:18px 22px; margin-bottom:28px; font-size:14.5px;
+  }
+
+  nav.toc{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:22px 26px; margin-bottom:32px;}
+  nav.toc h2{margin-top:0; font-size:16px;}
+  nav.toc ol{margin:0; padding-inline-start:22px;}
+  nav.toc li{margin-bottom:6px; font-size:14.5px;}
+  nav.toc a{color:var(--ink); text-decoration:none;}
+  nav.toc a:hover{color:var(--bd); text-decoration:underline;}
+
+  section{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:26px 28px; margin-bottom:26px;}
+  section h2{font-size:19px; margin:0 0 4px; display:flex; align-items:center; gap:10px;}
+  section h2 .num{
+    background:var(--ink); color:#fff; width:28px; height:28px; border-radius:8px;
+    display:inline-flex; align-items:center; justify-content:center; font-size:13px; flex:none;
+  }
+  section .sub{color:var(--muted); font-size:13.5px; margin:0 0 16px;}
+  .mermaid{background:#fbfbfd; border:1px dashed var(--line); border-radius:10px; padding:16px; overflow:auto;}
+
+  .legend{display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 4px;}
+  .legend span{font-size:12px; padding:4px 11px; border-radius:999px; color:#fff;}
+
+  .gap-group{margin-bottom:22px;}
+  .gap-group h3{font-size:16px; margin:0 0 10px; padding-bottom:8px; border-bottom:2px solid var(--line);}
+  .gap{
+    display:flex; gap:12px; padding:12px 0; border-bottom:1px solid var(--line);
+  }
+  .gap:last-child{border-bottom:none;}
+  .gap .tag2{
+    flex:none; font-size:11px; font-weight:700; background:#fef2f2; color:#b91c1c;
+    border-radius:6px; padding:3px 8px; height:fit-content; white-space:nowrap;
+  }
+  .gap .tag2.resolved{background:#f0fdf4; color:#15803d;}
+  .gap .tag2.decided{background:#eff6ff; color:#1d4ed8;}
+  .gap p{margin:0; font-size:14px;}
+  .gap strong{display:block; margin-bottom:3px; font-size:14.5px;}
+  .gap .decision-note{margin-top:8px; font-size:13px; background:#f0fdf4; border-left:3px solid #16a34a; padding:6px 10px; border-radius:4px; color:#166534;}
+  .gap .pending-note{margin-top:8px; font-size:13px; background:#eff6ff; border-left:3px solid #2563eb; padding:6px 10px; border-radius:4px; color:#1e40af;}
+
+  footer{text-align:center; color:var(--muted); font-size:13px; margin-top:20px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="cover">
+    <h1>Maps — RFI / RFP / RFQ</h1>
+    <div class="tags">
+      <span class="tag">RFI · RFP · RFQ</span>
+      <span class="tag">System-builder perspective (Odoo)</span>
+    </div>
+  </header>
+
+  <div class="note-box">
+    <strong>Methodology note:</strong> The three maps below (Sections 1, 2, 3) were originally a literal visual transcription of the three uploaded files. Following the meetings with Mr. Bandar, the RFP and RFQ maps were amended to add: (1) a separate Finance approval on the operational budget itself before it is sent to Sales, and (2) a decision branch in the quotation approval flow so that both Finance's approval and rejection route to Management (a Finance rejection is treated as an exception requiring Management's decision), and if Management rejects, the proposal is sent back for rework. The RFI clarification cycle was also simplified so it no longer loops back to departments (since nothing was actually returned there). Section 4 below documents the points that were previously flagged as gaps and have since been clarified and formally agreed — only one item remains pending.
+  </div>
+
+  <nav class="toc">
+    <h2>Contents</h2>
+    <ol>
+      <li><a href="#s1">RFI Process Map (Request for Information)</a></li>
+      <li><a href="#s2">RFP Process Map (Request for Proposal)</a></li>
+      <li><a href="#s3">RFQ Process Map (Request for Quotation)</a></li>
+      <li><a href="#s4">Points Clarified & Approved with Management</a></li>
+    </ol>
+  </nav>
+
+  <div class="legend">
+    <span style="background:var(--client)">Client</span>
+    <span style="background:var(--bd)">Business Development</span>
+    <span style="background:var(--hr)">HR</span>
+    <span style="background:var(--finance)">Finance</span>
+    <span style="background:var(--planning)">Planning</span>
+    <span style="background:var(--ops)">Operations</span>
+    <span style="background:var(--spec)">Specialist Depts</span>
+    <span style="background:var(--proc)">Procurement</span>
+    <span style="background:var(--sales)">Sales</span>
+    <span style="background:var(--mgmt)">Management</span>
+  </div>
+
+  <!-- 1. RFI -->
+  <section id="s1">
+    <h2><span class="num">1</span> RFI Process Map — Request for Information</h2>
+    <p class="sub">Source: PEAK_RFI_Workflow_Full.docx — the five documented phases combined with the "Department-to-Department Workflow" diagram into one sequence.</p>
+    <div class="mermaid">
+flowchart TD
+  CL1["Client issues the RFI"] --> BD1
+
+  subgraph BD_1["BUSINESS DEVELOPMENT — Phase 1: Opportunity Receipt & Qualification"]
+    BD1["Receive RFI (Peak Info email or direct)"] --> BD2["Review the request; determine if within Peak's services"]
+    BD2 --> BD3["Confirm participation with client"]
+    BD3 --> BD4["Register the opportunity within the system"]
+  end
+
+  BD4 --> NDA_DEC{"Phase 2 — Who issues the NDA?"}
+  NDA_DEC -- "Peak issues" --> NDA_P["BD sends NDA → Client signs → Peak signs → Filed"]
+  NDA_DEC -- "Client issues" --> NDA_C["BD forwards NDA to HR"]
+
+  subgraph HR_1["HR"]
+    NDA_C --> HR1["Reviews agreement"]
+    HR1 --> HR2["Recommends amendments where required"]
+    HR2 --> HR3["Coordinates execution"]
+    HR3 --> HR4["Executed NDA returned to BD"]
+  end
+
+  NDA_P --> DOC1
+  HR4 --> DOC1
+
+  subgraph BD_2["BUSINESS DEVELOPMENT — Phase 3: Corporate Documentation Collection"]
+    DOC1["Review client's information requirements"]
+  end
+
+  subgraph HR_2["HR"]
+    DOC1 --> HRDOC["Provide: CR, Company Reg., Municipal & GEA Licences, ISO Certs, Insurance, ZATCA Cert., Saudization Cert., Company Profile, other compliance docs"]
+  end
+
+  subgraph FIN_1["FINANCE (where required)"]
+    DOC1 --> FINDOC["Provide: Audited & Annual Financial Statements, Financial Capability Docs, other financial docs"]
+  end
+
+  HRDOC --> VERIFY
+  FINDOC --> VERIFY
+
+  subgraph BD_3["BUSINESS DEVELOPMENT"]
+    VERIFY["Verify all required documentation received"] --> DIST["Phase 4 — Distribute RFI to Planning and Operations"]
+  end
+
+  subgraph PLAN_1["PLANNING"]
+    DIST --> PL1["Review the request"]
+    PL1 --> PL2["Identify specialist departments required"]
+  end
+
+  subgraph OPS_1["OPERATIONS"]
+    PL2 --> OP1["Assign Project Manager where operational coordination required"]
+  end
+
+  subgraph PLAN_2["PLANNING"]
+    OP1 --> COORD["Coordinate all technical contributors"]
+  end
+
+  subgraph SPEC_1["SPECIALIST DEPARTMENTS (where required): Crowd Safety / Training / Parkit / ImagineX / Hemmtk"]
+    COORD --> SP1["Review assigned sections"]
+    SP1 --> SP2["Develop & submit technical information"]
+  end
+
+  subgraph PLAN_3["PLANNING"]
+    SP2 --> CONS["Consolidate all departmental responses"]
+    CONS --> CLARQ{"Is clarification required?"}
+    CLARQ -- "Yes" --> CLARPREP["Prepare Questions & Clarification Register"]
+  end
+
+  CLARQ -- "No" --> FINALCOMP
+
+  subgraph BD_4["BUSINESS DEVELOPMENT"]
+    CLARPREP --> CLARSEND["Submit clarification requests to client"]
+  end
+
+  CLARSEND --> FINALCOMP
+
+  subgraph BD_5["BUSINESS DEVELOPMENT — Phase 5: Information Response Submission"]
+    FINALCOMP["Compile: Consolidated Info Response + Corporate Docs + Financial Docs + Client Forms + Supporting Docs"]
+    FINALCOMP --> QA["Final QA Review + Compliance Check"]
+    QA --> SUBMIT["Submit response to client before deadline"]
+  end
+
+  SUBMIT --> CL2["Client receives the RFI Response"]
+
+  classDef client fill:#64748b,color:#fff,stroke:none;
+  classDef bd fill:#0891b2,color:#fff,stroke:none;
+  classDef hr fill:#db2777,color:#fff,stroke:none;
+  classDef finance fill:#16a34a,color:#fff,stroke:none;
+  classDef planning fill:#4f46e5,color:#fff,stroke:none;
+  classDef ops fill:#ea580c,color:#fff,stroke:none;
+  classDef spec fill:#7c3aed,color:#fff,stroke:none;
+
+  class CL1,CL2 client
+  class BD1,BD2,BD3,BD4,DOC1,VERIFY,DIST,CLARSEND,FINALCOMP,QA,SUBMIT bd
+  class NDA_C,HR1,HR2,HR3,HR4,HRDOC hr
+  class FINDOC finance
+  class PL1,PL2,COORD,CONS,CLARQ,CLARPREP planning
+  class OP1 ops
+  class SP1,SP2 spec
+    </div>
+  </section>
+
+  <!-- 2. RFP -->
+  <section id="s2">
+    <h2><span class="num">2</span> RFP Process Map — Request for Proposal</h2>
+    <p class="sub">Source: PEAK_RFP_Workflow_Adjusted.docx — the ten documented phases combined with the "Department-to-Department Workflow" diagram into one sequence.</p>
+    <div class="mermaid">
+flowchart TD
+  CL1["Client issues the RFP"] --> BD1
+
+  subgraph BD_1["BUSINESS DEVELOPMENT — Phase 1: Opportunity Receipt & Qualification"]
+    BD1["Receive RFP (Peak Info email or direct)"] --> BD2["Review scope, capability requirements & commercial viability"]
+    BD2 --> BD3["Decide whether Peak should participate"]
+    BD3 --> BD4["Confirm participation with client"]
+    BD4 --> BD5["Register the opportunity within the system"]
+  end
+
+  BD5 --> NDA_DEC{"Phase 2 — Who issues the NDA?"}
+  NDA_DEC -- "Peak issues" --> NDA_P["BD sends NDA → Client signs → Peak signs → Filed"]
+  NDA_DEC -- "Client issues" --> NDA_C["BD forwards NDA to HR"]
+
+  subgraph HR_1["HR"]
+    NDA_C --> HR1["Reviews, recommends amendments, coordinates execution, returns executed NDA to BD"]
+  end
+
+  NDA_P --> DOC1
+  HR1 --> DOC1
+
+  subgraph BD_2["BUSINESS DEVELOPMENT — Phase 3: Corporate Documentation Collection"]
+    DOC1["Review the RFP requirements"]
+  end
+
+  subgraph HR_2["HR"]
+    DOC1 --> HRDOC["Provide: CR, Company Reg., Municipal & GEA Licences, ISO Certs, Insurance, ZATCA Cert., Saudization Cert., other compliance docs"]
+  end
+
+  subgraph FIN_1["FINANCE (where required)"]
+    DOC1 --> FINDOC["Provide: Audited & Annual Financial Statements, Financial Capability Docs, other financial docs"]
+  end
+
+  HRDOC --> VERIFY
+  FINDOC --> VERIFY
+
+  subgraph BD_3["BUSINESS DEVELOPMENT"]
+    VERIFY["Verify all documentation before submission"] --> DIST["Phase 4 — Distribute the RFP package"]
+  end
+
+  subgraph PLAN_1["PLANNING — Technical Kick-Off"]
+    DIST --> PL1["Review the scope"]
+    PL1 --> PL2["Identify specialist departments"]
+  end
+
+  subgraph OPS_1["OPERATIONS"]
+    PL2 --> OP1["Assign Project Manager"]
+  end
+
+  subgraph PLAN_2["PLANNING"]
+    OP1 --> COORD["Coordinate all technical contributors"]
+  end
+
+  subgraph PHASE5["PLANNING + OPERATIONS (Assigned PM) — Phase 5: Technical Review & Client Clarifications"]
+    COORD --> REV["Review scope, technical requirements, deliverables, operational constraints, client expectations, compliance requirements"]
+    REV --> CLARPREP["Planning prepares Questions & Clarification Register"]
+  end
+
+  subgraph BD_4["BUSINESS DEVELOPMENT"]
+    CLARPREP --> CLARSEND["Submit clarification requests to client"]
+  end
+
+  CLARSEND --> MEETDEC{"Phase 6 — Is a clarification meeting required?"}
+
+  subgraph BD_M["BUSINESS DEVELOPMENT"]
+    MEETDEC -- "Yes" --> MEET["Coordinate clarification meeting (Planning, Operations, Specialist Depts) — outcomes incorporated into proposal"]
+  end
+  MEETDEC -- "No" --> TPDEV
+  MEET --> TPDEV
+
+  subgraph SPEC_1["SPECIALIST DEPARTMENTS — Phase 7: Technical Proposal Development: Crowd Safety / Training / Parkit / ImagineX / Hemmtk"]
+    TPDEV["Submit technical recommendations"]
+  end
+
+  subgraph PLAN_3["PLANNING"]
+    TPDEV --> CONS["Consolidate the Technical Proposal"]
+  end
+
+  subgraph OPS_2["OPERATIONS (Assigned PM)"]
+    CONS --> OPREV["Final operational review before budgeting"]
+  end
+
+  subgraph OPS_3["OPERATIONS — Phase 8: Project Budget Development"]
+    OPREV --> BUD1["PM develops operational budget: manpower, equipment, vehicles, logistics, PPE, consumables, operational costs, subcontractors"]
+    BUD1 --> VENDEC{"External vendors / specialist services required?"}
+  end
+
+  VENDEC -- "Yes" --> PROC1
+  VENDEC -- "No" --> HRDEC
+
+  subgraph PROC_1["PROCUREMENT"]
+    PROC1["Obtain: equipment purchase/rental pricing, vendor quotations, Parkit / Hemmtk / ImagineX pricing, software licensing, SaaS, third-party pricing, delivery & mobilisation costs"]
+  end
+
+  PROC1 --> HRDEC{"Accommodation / travel / bookings required?"}
+  HRDEC -- "Yes" --> HR3
+  HRDEC -- "No" --> CONSBUD
+
+  subgraph HR_3["HR"]
+    HR3["Obtain: hotel, flight, vehicle hire quotations, accommodation pricing, other booking costs"]
+  end
+
+  HR3 --> CONSBUD
+
+  subgraph OPS_4["OPERATIONS"]
+    CONSBUD["Consolidate all operational, vendor, travel & accommodation costs into final Project Budget"]
+  end
+
+  subgraph FIN_BUDGET["FINANCE"]
+    CONSBUD --> BUDFINREV["Review & approve the operational Project Budget"]
+    BUDFINREV --> BUDFINDEC{"Budget approved?"}
+  end
+
+  BUDFINDEC -- "No — send back for rework" --> CONSBUD
+
+  subgraph OPS_5["OPERATIONS"]
+    BUDFINDEC -- "Yes" --> SENDBD["Submit approved Project Budget to Business Development"]
+  end
+
+  subgraph SALES_1["SALES — Phase 9: Commercial Pricing"]
+    SENDBD --> COMPRICE["BD forwards approved budget to Sales → Sales prepares commercial quotation"]
+  end
+
+  subgraph FIN_2["FINANCE"]
+    COMPRICE --> FINREV["Review profitability, margins & commercial compliance"]
+    FINREV --> FINDEC{"Finance decision"}
+  end
+
+  subgraph MGMT_1["MANAGEMENT"]
+    FINDEC -- "Approve" --> MGMTAPP["Management Approval"]
+    FINDEC -- "Reject (exception)" --> MGMTAPP
+    MGMTAPP --> MGMTDEC{"Management decision"}
+  end
+
+  MGMTDEC -- "Reject — send back for rework" --> COMPRICE
+
+  subgraph BD_5["BUSINESS DEVELOPMENT — Phase 10: Final Proposal Compilation & Submission"]
+    MGMTDEC -- "Approve" --> COMPILE["Compile: Technical Proposal + Commercial Proposal + Corporate Docs + Financial Docs + Client Forms + Supporting Docs"]
+    COMPILE --> QA["Compliance check"]
+    QA --> SUBMIT["Submit proposal to client"]
+  end
+
+  SUBMIT --> CL2["Client receives the RFP Proposal"]
+
+  classDef client fill:#64748b,color:#fff,stroke:none;
+  classDef bd fill:#0891b2,color:#fff,stroke:none;
+  classDef hr fill:#db2777,color:#fff,stroke:none;
+  classDef finance fill:#16a34a,color:#fff,stroke:none;
+  classDef planning fill:#4f46e5,color:#fff,stroke:none;
+  classDef ops fill:#ea580c,color:#fff,stroke:none;
+  classDef spec fill:#7c3aed,color:#fff,stroke:none;
+  classDef proc fill:#b45309,color:#fff,stroke:none;
+  classDef sales fill:#2563eb,color:#fff,stroke:none;
+  classDef mgmt fill:#b91c1c,color:#fff,stroke:none;
+
+  class CL1,CL2 client
+  class BD1,BD2,BD3,BD4,BD5,DOC1,VERIFY,DIST,CLARSEND,MEET,COMPILE,QA,SUBMIT bd
+  class NDA_C,HR1,HRDOC,HR3 hr
+  class FINDOC,FINREV,BUDFINREV,BUDFINDEC,FINDEC finance
+  class PL1,PL2,COORD,REV,CLARPREP,CONS planning
+  class OP1,OPREV,BUD1,VENDEC,HRDEC,CONSBUD,SENDBD ops
+  class TPDEV spec
+  class PROC1 proc
+  class COMPRICE sales
+  class MGMTAPP,MGMTDEC mgmt
+    </div>
+  </section>
+
+  <!-- 3. RFQ -->
+  <section id="s3">
+    <h2><span class="num">3</span> RFQ Process Map — Request for Quotation</h2>
+    <p class="sub">Source: PEAK_RFQ_Workflow_Adjusted.docx — the six documented phases combined with the "Department-to-Department Workflow" diagram into one sequence.</p>
+    <div class="mermaid">
+flowchart TD
+  CL1["Client issues the RFQ"] --> BD1
+
+  subgraph BD_1["BUSINESS DEVELOPMENT — Phase 1: Opportunity Receipt & Qualification"]
+    BD1["Receive RFQ (Peak Info email or direct)"] --> BD2["Review scope, capability requirements & commercial viability"]
+    BD2 --> BD3["Decide whether Peak will participate"]
+    BD3 --> BD4["Confirm participation with client"]
+    BD4 --> BD5["Register the opportunity within the system"]
+  end
+
+  BD5 --> NDA_DEC{"Phase 2 — Who issues the NDA?"}
+  NDA_DEC -- "Peak issues" --> NDA_P["BD sends NDA → Client signs → Peak signs → Filed"]
+  NDA_DEC -- "Client issues" --> NDA_C["BD forwards NDA to HR"]
+
+  subgraph HR_1["HR"]
+    NDA_C --> HR1["Reviews, recommends amendments, coordinates execution, returns executed NDA"]
+  end
+
+  NDA_P --> DOC1
+  HR1 --> DOC1
+
+  subgraph BD_2["BUSINESS DEVELOPMENT — Phase 3: Corporate Documentation Collection"]
+    DOC1["Review the RFQ submission requirements"]
+  end
+
+  subgraph HR_2["HR"]
+    DOC1 --> HRDOC["Provide: CR, Company Reg., Municipal & GEA Licences, ISO Certs, Insurance, ZATCA Cert., Saudization Cert., Company Profile"]
+  end
+
+  subgraph FIN_1["FINANCE (where required)"]
+    DOC1 --> FINDOC["Provide: Audited & Annual Financial Statements, Financial Capability Docs"]
+  end
+
+  HRDOC --> VERIFY
+  FINDOC --> VERIFY
+
+  subgraph BD_3["BUSINESS DEVELOPMENT"]
+    VERIFY["Verify all documentation before submission"] --> FWD["Forward RFQ to Operations"]
+  end
+
+  subgraph OPS_1["OPERATIONS — Phase 4: Project Budget / BOQ / Rate Card Development"]
+    FWD --> OP1["Review RFQ & prepare clarification questions where required"]
+  end
+
+  subgraph BD_4["BUSINESS DEVELOPMENT"]
+    OP1 --> CLARSEND["Submit clarification requests to client & distribute responses back to Operations"]
+  end
+
+  subgraph OPS_2["OPERATIONS"]
+    CLARSEND --> DEV["Develop BOQ, rate card, manpower & equipment requirements, operational assumptions"]
+    DEV --> VENDEC{"External vendors / specialist services required?"}
+  end
+
+  VENDEC -- "Yes" --> PROC1
+  VENDEC -- "No" --> HRDEC
+
+  subgraph PROC_1["PROCUREMENT"]
+    PROC1["Obtain: equipment purchase/rental pricing, vendor quotations, Parkit / Hemmtk / ImagineX pricing, software licensing, SaaS, third-party pricing, delivery & mobilisation costs"]
+  end
+
+  PROC1 --> HRDEC{"Accommodation / travel / bookings required?"}
+  HRDEC -- "Yes" --> HR3
+  HRDEC -- "No" --> CONSBUD
+
+  subgraph HR_3["HR"]
+    HR3["Obtain: hotel, flight, vehicle hire quotations, staff travel (Perdiems), accommodation pricing, other booking costs"]
+  end
+
+  HR3 --> CONSBUD
+
+  subgraph OPS_3["OPERATIONS"]
+    CONSBUD["Consolidate all pricing into final BOQ / rate card / operational pricing"]
+  end
+
+  subgraph FIN_BUDGET["FINANCE"]
+    CONSBUD --> BUDFINREV["Review & approve the operational pricing / BOQ"]
+    BUDFINREV --> BUDFINDEC{"Budget approved?"}
+  end
+
+  BUDFINDEC -- "No — send back for rework" --> CONSBUD
+
+  subgraph OPS_6["OPERATIONS"]
+    BUDFINDEC -- "Yes" --> SENDBD["Submit approved pricing to Business Development"]
+  end
+
+  subgraph SALES_1["SALES — Phase 5: Commercial Pricing"]
+    SENDBD --> COMPRICE["BD forwards operational pricing to Sales → Sales prepares commercial quotation"]
+  end
+
+  subgraph FIN_2["FINANCE"]
+    COMPRICE --> FINREV["Review profitability, margins & commercial compliance"]
+    FINREV --> FINDEC{"Finance decision"}
+  end
+
+  subgraph MGMT_1["MANAGEMENT"]
+    FINDEC -- "Approve" --> MGMTAPP["Management Approval"]
+    FINDEC -- "Reject (exception)" --> MGMTAPP
+    MGMTAPP --> MGMTDEC{"Management decision"}
+  end
+
+  MGMTDEC -- "Reject — send back for rework" --> COMPRICE
+
+  subgraph BD_5["BUSINESS DEVELOPMENT — Phase 6: Commercial Proposal Submission"]
+    MGMTDEC -- "Approve" --> COMPILE["Compile: Commercial Proposal + BOQ + Rate Card + Corporate Docs + Financial Docs + Client Forms + Supporting Docs"]
+    COMPILE --> QA["Final QA Review + Compliance Check"]
+    QA --> SUBMIT["Submit to client before deadline"]
+  end
+
+  SUBMIT --> CL2["Client receives the RFQ Submission"]
+
+  classDef client fill:#64748b,color:#fff,stroke:none;
+  classDef bd fill:#0891b2,color:#fff,stroke:none;
+  classDef hr fill:#db2777,color:#fff,stroke:none;
+  classDef finance fill:#16a34a,color:#fff,stroke:none;
+  classDef ops fill:#ea580c,color:#fff,stroke:none;
+  classDef proc fill:#b45309,color:#fff,stroke:none;
+  classDef sales fill:#2563eb,color:#fff,stroke:none;
+  classDef mgmt fill:#b91c1c,color:#fff,stroke:none;
+
+  class CL1,CL2 client
+  class BD1,BD2,BD3,BD4,BD5,DOC1,VERIFY,FWD,CLARSEND,COMPILE,QA,SUBMIT bd
+  class NDA_C,HR1,HRDOC,HR3 hr
+  class FINDOC,FINREV,BUDFINREV,BUDFINDEC,FINDEC finance
+  class OP1,DEV,VENDEC,HRDEC,CONSBUD,SENDBD ops
+  class PROC1 proc
+  class COMPRICE sales
+  class MGMTAPP,MGMTDEC mgmt
+    </div>
+  </section>
+
+  <!-- 4. CLARIFICATIONS -->
+  <section id="s4">
+    <h2><span class="num">4</span> Points Clarified & Approved with Management</h2>
+    <p class="sub">The following points were previously raised as gaps and have since been clarified and approved following the meetings with Mr. Bandar. Only one item remains pending (flagged below under RFP-specific points).</p>
+
+    <div class="gap-group">
+      <h3>Points common to all three files (RFI / RFP / RFQ) — Resolved</h3>
+
+      <div class="gap">
+        <span class="tag2 resolved">Resolved</span>
+        <div><strong>The "Decline to participate" case</strong>
+        <p><em>Decision:</em> The business process starts from the Lead stage, not the Opportunity stage. The participation decision is made during Lead Qualification; only qualified Leads are converted into Opportunities, while unqualified Leads remain at the Lead stage with the reason for disqualification documented.</p></div>
+      </div>
+
+      <div class="gap">
+        <span class="tag2 resolved">Resolved</span>
+        <div><strong>Criteria for "does the request fall within Peak's services?" or "commercial viability"</strong>
+        <p><em>Decision:</em> The qualification decision is performed during Lead Qualification. Business qualification criteria (customer targets, sales targets, strategic objectives, etc.) will be defined separately and may evolve over time.</p></div>
+      </div>
+
+      <div class="gap">
+        <span class="tag2 resolved">Resolved</span>
+        <div><strong>The entities "Parkit", "ImagineX", and "Hemmtk"</strong>
+        <p><em>Decision:</em> These companies will be treated as external vendors/service providers only, not internal departments. Pricing and commercial engagement with them will be handled through Procurement.</p></div>
+      </div>
+
+      <div class="gap">
+        <span class="tag2 resolved">Resolved</span>
+        <div><strong>Failed documentation completeness check before submission</strong>
+        <p><em>Decision:</em> Business Development is responsible for following up with the relevant departments to obtain any missing documents before submission.</p></div>
+      </div>
+
+      <div class="gap">
+        <span class="tag2 resolved">Resolved</span>
+        <div><strong>Limit on the number of clarification rounds with the client</strong>
+        <p><em>Decision:</em> The clarification cycle remains intentionally open during this phase, with Business Development continuing to communicate with the customer until enough information is available — no maximum number of rounds is set.</p></div>
+      </div>
+
+      <div class="gap">
+        <span class="tag2 resolved">Resolved</span>
+        <div><strong>Link between these three processes and the "Opportunity → Project" process</strong>
+        <p><em>Decision:</em> Once the customer approves the proposal, the process continues using the existing Opportunity-to-Project workflow to complete the end-to-end business process.</p></div>
+      </div>
+
+      <div class="gap">
+        <span class="tag2 resolved">Resolved</span>
+        <div><strong>Document repository/storage system (NDA, corporate documents, technical proposals)</strong>
+        <p><em>Decision:</em> Project documents may either be stored inside the customer document folder using project tags, or linked directly to the Project record. In either case, the customer record must provide access to all documents from its related projects.</p></div>
+      </div>
+
+      <div class="gap">
+        <span class="tag2 resolved">Resolved</span>
+        <div><strong>Intake mechanism ("Peak Info email")</strong>
+        <p><em>Decision:</em> Requests will be entered manually by Business Development. No automatic email integration is planned at this time.</p></div>
+      </div>
+
+      <div class="gap">
+        <span class="tag2 resolved">Resolved</span>
+        <div><strong>No turnaround time (SLA) was defined for any phase across the three files</strong>
+        <p><em>Decision:</em> The overall deadline is set first by Business Development. After that, each team is responsible for setting the SLA/turnaround time needed to complete its own task before handing it to the next team in the sequence, provided this stays within the overall deadline Business Development set at the start. In other words, each team sets the deadline for the team that follows it in the workflow.</p></div>
+      </div>
+    </div>
+
+    <div class="gap-group">
+      <h3>Points specific to RFP</h3>
+      <div class="gap">
+        <span class="tag2 resolved">Resolved</span>
+        <div><strong>Senior Management approval</strong>
+        <p><em>Decision:</em> A Management Approval step has been added to the RFP workflow immediately after Finance Approval and before proposal submission to the client — the RFP diagram above (Section 2) has been updated to reflect this, including the exception path when Finance rejects and the rework path when Management rejects.</p></div>
+      </div>
+      <div class="gap">
+        <span class="tag2">Not yet resolved</span>
+        <div><strong>The relationship between Planning and Operations in Phase 4 (Technical Kick-Off)</strong>
+        <p>It's still not defined with enough precision whether the Project Manager assignment by Operations happens in parallel with Planning's review or after an explicit request from Planning. This item was not raised in the latest meetings and still needs to be resolved.</p></div>
+      </div>
+    </div>
+
+    <div class="gap-group">
+      <h3>Points specific to RFQ</h3>
+      <div class="gap">
+        <span class="tag2 resolved">Resolved</span>
+        <div><strong>Senior Management approval</strong>
+        <p><em>Decision:</em> A Management Approval step has been added to the RFQ workflow immediately after Finance Approval and before proposal submission to the client — the RFQ diagram above (Section 3) has been updated to reflect this, including the exception path when Finance rejects and the rework path when Management rejects.</p></div>
+      </div>
+      <div class="gap">
+        <span class="tag2 resolved">Resolved</span>
+        <div><strong>Overlap between RFQ Phases 1-3 and RFP/RFI Phases 1-3, and whether a request's classification can change mid-process</strong>
+        <p><em>Decision:</em> A request can convert from RFI into RFP or RFQ during the process (i.e., its scope may later expand), but not the other way around — an RFP or RFQ does not convert into an RFI. The overlap in Phases 1-3 across the three files is intentional and consistent with this path.</p></div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad:true,
+    theme:"base",
+    themeVariables:{ fontFamily:"Segoe UI, Helvetica Neue, Arial, sans-serif", fontSize:"13px" },
+    flowchart:{ curve:"basis", htmlLabels:true },
+    securityLevel:"loose"
+  });
+</script>
+</body>
+</html>
